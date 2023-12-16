@@ -74,54 +74,6 @@ use Goldfinch\FocusPointExtra\Forms\SortableUploadFieldWithExtra;
 
 class Harvest
 {
-    /**
-     * TODO:
-     * - laravel helper camelcase to sentence (for title = null)
-     * - clean up all fields
-     * - populate fields based on initial data
-     * - write all examples for each method
-     * - write all available options for each method
-     * - helper
-     * - remove
-     * - label
-     * - description
-     * - ? required
-     * - radio | select | bigInt | locale | int | enumMultiple | percentage | year | country
-     *
-     *
-      Wrapper
-      AutoCompleteField
-      StringTagField
-      ReadonlyTagField
-
-      DayOfMonthField
-      DayOfWeekField
-      HoursField
-      MinutesField
-      MonthField
-      ImageCoordsField
-      FocusPointField
-
-      * Encrtpyed
-
-      HasOneLinkField
-      HasOneButtonField
-      PreviewImageField
-      AnchorSelectorField
-      SiteTreeURLSegmentField
-      HeaderField
-      HTMLReadonlyField
-      SelectField
-      SingleSelectField
-      ModelField
-      DiffField
-      HasOneUploadField
-      ChoiceFromField
-      FileFromField
-      InputFormField
-      TextareaField
-     */
-
     private $fields = null;
 
     private $parent = null;
@@ -130,15 +82,6 @@ class Harvest
     {
         $this->fields = $fields;
         $this->parent = $parent;
-    }
-
-    public function enchant()
-    {
-        // $customLabels = $this->config()->get('field_labels');
-        // $db_fields = ss_config($this->ClassName, 'db');
-        // $hasOne_relationships = ss_config($this->ClassName, 'has_one');
-        // $hasMany_relationships = ss_config($this->ClassName, 'has_many');
-        // $manyMany_relationships = ss_config($this->ClassName, 'many_many');
     }
 
     public function field($name, $title = null)
@@ -911,6 +854,10 @@ class Harvest
         private static $owns = [
             'Image',
         ];
+     * 2)
+        LittleGiant\SilverStripeImagePoints\DataObjects\Point:
+          image_width: 1918
+          image_height: 822
      * Code example:
         $harvest->points('ImagePoints'),
      */
