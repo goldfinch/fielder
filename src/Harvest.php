@@ -48,6 +48,7 @@ use SilverStripe\Forms\SelectionGroup;
 use SilverStripe\ORM\FieldType\DBEnum;
 use SilverStripe\ORM\FieldType\DBYear;
 use SilverStripe\ORM\FieldType\DBFloat;
+use SilverStripe\AnyField\Form\AnyField;
 use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\ORM\FieldType\DBBigInt;
 use SilverStripe\ORM\FieldType\DBDouble;
@@ -63,6 +64,7 @@ use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\SelectionGroup_Item;
 use SilverStripe\TagField\ReadonlyTagField;
 use UncleCheese\DisplayLogic\Forms\Wrapper;
+use SilverStripe\AnyField\Form\ManyAnyField;
 use SilverStripe\Forms\GroupedDropdownField;
 use SilverStripe\Forms\ToggleCompositeField;
 use SilverStripe\Forms\TreeMultiselectField;
@@ -75,6 +77,7 @@ use SilverStripe\Forms\ConfirmedPasswordField;
 use TractorCow\AutoComplete\AutoCompleteField;
 use Goldfinch\JSONEditor\Forms\JSONEditorField;
 use SilverStripe\CMS\Forms\AnchorSelectorField;
+use SilverStripe\LinkField\Form\MultiLinkField;
 use SilverStripe\VersionedAdmin\Forms\DiffField;
 use Heyday\ColorPalette\Fields\ColorPaletteField;
 use SilverStripe\Forms\GridField\GridFieldConfig;
@@ -84,15 +87,19 @@ use SilverStripe\AssetAdmin\Forms\PreviewImageField;
 use Goldfinch\FocusPointExtra\Forms\ImageCoordsField;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldEditButton;
+use Innoweb\InternationalPhoneNumberField\ORM\DBPhone;
+use KevinGroeger\CodeEditorField\Forms\CodeEditorField;
 use Kinglozzer\MultiSelectField\Forms\MultiSelectField;
+use RyanPotter\SilverStripeColorField\Forms\ColorField;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use Heyday\ColorPalette\Fields\GroupedColorPaletteField;
 use Goldfinch\FocusPointExtra\Forms\UploadFieldWithExtra;
 use LittleGiant\SilverStripeImagePoints\Forms\PointField;
+use NSWDPC\Forms\ImageSelectionField\ImageSelectionField;
+use SilverStripe\LinkField\Form\LinkField as SSLinkField;
 use Dynamic\CountryDropdownField\Fields\CountryDropdownField;
 use Goldfinch\FocusPointExtra\Forms\SortableUploadFieldWithExtra;
-use Innoweb\InternationalPhoneNumberField\ORM\DBPhone;
 
 class Harvest
 {
@@ -114,6 +121,20 @@ class Harvest
     public function dataField($name)
     {
         return $this->fields->dataFieldByName($name);
+    }
+
+    public function clearAllFields()
+    {
+        foreach ($this->fields->flattenFields() as $field)
+        {
+            if (!in_array(get_class($field), [
+              Tab::class,
+              TabSet::class,
+            ]))
+            {
+                $this->fields->removeByName($field->getName());
+            }
+        }
     }
 
     /**
@@ -825,6 +846,27 @@ class Harvest
     }
 
     /**
+     * DB Type: Varchar(7)
+     * Available methods:
+
+     * 1) yml
+      RyanPotter\SilverStripeColorField\Forms\ColorField:
+        colors:
+          - '#1976D2'
+          - '#2196F3'
+          - '#BBDEFB'
+          - '#FFFFFF'
+          - '#FF4081'
+          - '#212121'
+          - '#727272'
+          - '#B6B6B6'
+     */
+    public function colorPicker($name, $title = null, $value = '', $form = null)
+    {
+        return ColorField::create($name, $title, $value, $form);
+    }
+
+    /**
      * DB Type: *
      * Available methods:
      *
@@ -906,6 +948,67 @@ class Harvest
         $this->fields->removeByName($name . 'ID');
 
         return LinkField::create($name, $title, $this->parent, $linkConfig);
+    }
+
+    /**
+     * DB Type: SilverStripe\LinkField\Models\Link;
+     * Allowed relations: has_one
+     * Available methods:
+     */
+    public function anyLink($name, $title = null, $value = null)
+    {
+        // $this->fields->removeByName($name . 'ID');
+
+        return AnyField::create($name, $title, $value);
+    }
+
+    /**
+     * DB Type: SilverStripe\LinkField\Models\Link;
+     * Allowed relations: has_many | many_many | belongs_many_many
+     * Available methods:
+     */
+    public function anyLinks($name, $title = null, SS_List $dataList = null)
+    {
+        // $this->fields->removeByName($name . 'ID');
+
+        return ManyAnyField::create($name, $title, $dataList);
+    }
+
+    /**
+     * DB Type: SilverStripe\LinkField\Models\Link;
+     * Allowed relations: has_many | many_many | belongs_many_many
+     * Available methods:
+     */
+    public function sslink($name, $title = null, $value = null)
+    {
+        // $this->fields->removeByName($name . 'ID');
+
+        return SSLinkField::create($name, $title, $value);
+    }
+
+    /**
+     * DB Type: SilverStripe\LinkField\Models\Link;
+     * Allowed relations: has_many | many_many | belongs_many_many
+     * Available methods:
+     */
+    // public function sslinks($name, $title = null, SS_List $dataList = null)
+    // {
+    //     // $this->fields->removeByName($name . 'ID');
+
+    //     return MultiLinkField::create($name, $title, $dataList);
+    // }
+
+    /**
+     * DB Type: *
+     * Available methods: setMode() setTheme()
+     */
+    public function code($name, $title = null, $value = null, $mode = 'ace/mode/html', $theme = 'ace/theme/github')
+    {
+        $field = CodeEditorField::create($name, $title, $value);
+        $field->setMode($mode);
+        $field->setTheme($theme);
+
+        return $field;
     }
 
     /**
@@ -1171,6 +1274,32 @@ class Harvest
 
         $field = new DBPhone($name, $options);
         return $field->scaffoldFormField($title);
+    }
+
+    /**
+     * DB Type:
+     *
+        'Image' => Image::class,
+
+        'Images' => Image::class,
+     * Available methods:
+     *
+     * Code example:
+        $harvest->mediaSelect('Image', 'Images'),
+     */
+    public function mediaSelect($name, $relationList, $title = null)
+    {
+        if (is_string($relationList))
+        {
+            $relation = $this->parent->getRelationType($relationList);
+
+            if (in_array($relation, ['has_many', 'many_many', 'belongs_many_many']))
+            {
+                $relationList = $this->parent->$relationList();
+            }
+        }
+
+        return ImageSelectionField::create($name . 'ID', $title ?? $name)->setImageList($relationList);
     }
 
     private function isDBType($name, $type)
