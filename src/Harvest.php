@@ -104,12 +104,15 @@ use Goldfinch\FocusPointExtra\Forms\SortableUploadFieldWithExtra;
 class Harvest
 {
     private $fields = null;
+    private $initialFields = null;
+    private $allFieldsCleared = false;
 
     private $parent = null;
 
-    public function __construct(&$fields, $parent)
+    public function __construct($fields, $parent)
     {
         $this->fields = $fields;
+        $this->initialFields = clone $this->fields;
         $this->parent = $parent;
     }
 
@@ -118,9 +121,31 @@ class Harvest
         return $this->parent->dbObject($name)->scaffoldFormField($title);
     }
 
+    public function clear($fields)
+    {
+        $this->fields->removeByName($fields);
+    }
+
+    public function fields($fieldsList)
+    {
+        foreach ($fieldsList as $tab => $list)
+        {
+            $this->fields->addFieldsToTab($tab, $list);
+        }
+
+        return $this->fields;
+    }
+
     public function dataField($name)
     {
-        return $this->fields->dataFieldByName($name);
+        if ($this->allFieldsCleared)
+        {
+            return $this->initialFields->dataFieldByName($name);
+        }
+        else
+        {
+            return $this->fields->dataFieldByName($name);
+        }
     }
 
     public function clearAllFields()
@@ -135,6 +160,8 @@ class Harvest
                 $this->fields->removeByName($field->getName());
             }
         }
+
+        $this->allFieldsCleared = true;
     }
 
     /**
