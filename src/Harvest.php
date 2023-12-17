@@ -47,6 +47,8 @@ use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\SelectionGroup;
 use SilverStripe\ORM\FieldType\DBEnum;
 use SilverStripe\ORM\FieldType\DBYear;
+use Goldfinch\Icon\Forms\IconFileField;
+use Goldfinch\Icon\Forms\IconFontField;
 use SilverStripe\ORM\FieldType\DBFloat;
 use SilverStripe\AnyField\Form\AnyField;
 use SilverStripe\Forms\CheckboxSetField;
@@ -1281,6 +1283,26 @@ class Harvest
     public function country($name, $title = null, $source = [], $value = '', $form = null)
     {
         return CountryDropdownField::create($name, $title, $source, $value, $form);
+    }
+
+    /**
+     * DB Type: Goldfinch\Icon\ORM\FieldType\DBIcon
+     * Available methods:
+     * 1) required .yml config (see goldfinch/icon/README.md)
+     */
+    public function iconFile($name, $title = null, $sourceFolder = null)
+    {
+        return IconFileField::create($name, $title, $sourceFolder);
+    }
+
+    /**
+     * DB Type: Goldfinch\Icon\ORM\FieldType\DBIcon
+     * Available methods:
+     * 1) required .yml config (see goldfinch/icon/README.md)
+     */
+    public function iconFont($name, $title = null)
+    {
+        return IconFontField::create($name, $title);
     }
 
     /**
