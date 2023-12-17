@@ -5,6 +5,7 @@ namespace Goldfinch\Harvest;
 use Goldfinch\Harvest\Grid;
 use SilverStripe\Forms\Tab;
 use SilverStripe\ORM\SS_List;
+use SilverStripe\Assets\Image;
 use SilverStripe\Forms\TabSet;
 use BetterBrief\GoogleMapField;
 use SilverStripe\ORM\DataObject;
@@ -16,6 +17,7 @@ use SilverStripe\Forms\FormField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TimeField;
 use gorriecoe\LinkField\LinkField;
+use LeKoala\Encrypt\EncryptHelper;
 use SilverStripe\Forms\EmailField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\FormAction;
@@ -29,6 +31,7 @@ use SilverStripe\Forms\ListboxField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\PopoverField;
+use SGN\HasOneEdit\HasOneUploadField;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DatalessField;
@@ -38,30 +41,47 @@ use SilverStripe\Forms\NullableField;
 use SilverStripe\Forms\PasswordField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\TextareaField;
+use SilverStripe\ORM\FieldType\DBInt;
 use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\SelectionGroup;
 use SilverStripe\ORM\FieldType\DBEnum;
+use SilverStripe\ORM\FieldType\DBYear;
 use SilverStripe\ORM\FieldType\DBFloat;
 use SilverStripe\Forms\CheckboxSetField;
+use SilverStripe\ORM\FieldType\DBBigInt;
 use SilverStripe\ORM\FieldType\DBDouble;
+use SilverStripe\ORM\FieldType\DBLocale;
+use SilverStripe\Forms\HTMLReadonlyField;
 use SilverStripe\Forms\SingleLookupField;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\ORM\FieldType\DBDecimal;
+use SilverStripe\TagField\StringTagField;
+use JonoM\FocusPoint\Forms\FocusPointField;
 use PhpTek\JSONText\ORM\FieldType\JSONText;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\SelectionGroup_Item;
+use SilverStripe\TagField\ReadonlyTagField;
+use UncleCheese\DisplayLogic\Forms\Wrapper;
 use SilverStripe\Forms\GroupedDropdownField;
 use SilverStripe\Forms\ToggleCompositeField;
 use SilverStripe\Forms\TreeMultiselectField;
+use SilverStripe\ORM\FieldType\DBPercentage;
 use SilverStripe\Security\Confirmation\Item;
 use SilverShop\HasOneField\HasOneButtonField;
+use gorriecoe\LinkField\Forms\HasOneLinkField;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Forms\ConfirmedPasswordField;
+use TractorCow\AutoComplete\AutoCompleteField;
 use Goldfinch\JSONEditor\Forms\JSONEditorField;
+use SilverStripe\CMS\Forms\AnchorSelectorField;
+use SilverStripe\VersionedAdmin\Forms\DiffField;
 use Heyday\ColorPalette\Fields\ColorPaletteField;
 use SilverStripe\Forms\GridField\GridFieldConfig;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
+use SilverStripe\CMS\Forms\SiteTreeURLSegmentField;
+use SilverStripe\AssetAdmin\Forms\PreviewImageField;
+use Goldfinch\FocusPointExtra\Forms\ImageCoordsField;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldEditButton;
 use Kinglozzer\MultiSelectField\Forms\MultiSelectField;
@@ -70,7 +90,9 @@ use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use Heyday\ColorPalette\Fields\GroupedColorPaletteField;
 use Goldfinch\FocusPointExtra\Forms\UploadFieldWithExtra;
 use LittleGiant\SilverStripeImagePoints\Forms\PointField;
+use Dynamic\CountryDropdownField\Fields\CountryDropdownField;
 use Goldfinch\FocusPointExtra\Forms\SortableUploadFieldWithExtra;
+use Innoweb\InternationalPhoneNumberField\ORM\DBPhone;
 
 class Harvest
 {
@@ -584,7 +606,7 @@ class Harvest
      */
     public function decimal($name, $title = null, $wholeSize = 9, $decimalSize = 2, $defaultValue = 0)
     {
-        if ($this->isDBType($name, DBDecimal::class))
+        if (!$this->isDBType($name, DBDecimal::class))
         {
             return $this->returnError($name, 'decimal');
         }
@@ -602,7 +624,7 @@ class Harvest
      */
     public function double($name, $title = null, $defaultVal = 0)
     {
-        if ($this->isDBType($name, DBDouble::class))
+        if (!$this->isDBType($name, DBDouble::class))
         {
             return $this->returnError($name, 'double');
         }
@@ -620,7 +642,7 @@ class Harvest
      */
     public function float($name, $title = null, $defaultVal = 0)
     {
-        if ($this->isDBType($name, DBFloat::class))
+        if (!$this->isDBType($name, DBFloat::class))
         {
             return $this->returnError($name, 'float');
         }
@@ -633,12 +655,87 @@ class Harvest
     }
 
     /**
+     * DB Type: Year
+     * Available methods:
+     */
+    public function year($name, $title = null, $options = [])
+    {
+        if (!$this->isDBType($name, DBYear::class))
+        {
+            return $this->returnError($name, 'year');
+        }
+
+        $field = new DBYear($name, $options = []);
+        return $field->scaffoldFormField($title);
+    }
+
+    /**
+     * DB Type: Percentage | Percentage(6)
+     * Available methods:
+     */
+    public function percentage($name, $title = null, $precision = 4)
+    {
+        if (!$this->isDBType($name, DBPercentage::class))
+        {
+            return $this->returnError($name, 'percentage');
+        }
+
+        $field = new DBPercentage($name, $precision);
+        return $field->scaffoldFormField($title);
+    }
+
+    /**
+     * DB Type: Int
+     * Available methods:
+     */
+    public function int($name, $title = null, $defaultVal = 0)
+    {
+        if (!$this->isDBType($name, DBInt::class))
+        {
+            return $this->returnError($name, 'int');
+        }
+
+        $field = new DBInt($name, $defaultVal);
+        return $field->scaffoldFormField($title);
+    }
+
+    /**
+     * DB Type: BigInt
+     * Available methods:
+     */
+    public function bigInt($name, $title = null, $defaultVal = 0)
+    {
+        if (!$this->isDBType($name, DBBigInt::class))
+        {
+            return $this->returnError($name, 'int');
+        }
+
+        $field = new DBBigInt($name, $defaultVal);
+        return $field->scaffoldFormField($title);
+    }
+
+    /**
+     * DB Type: Locale
+     * Available methods:
+     */
+    public function locale($name, $title = null, $size = 16)
+    {
+        if (!$this->isDBType($name, DBLocale::class))
+        {
+            return $this->returnError($name, 'int');
+        }
+
+        $field = new DBLocale($name, $size);
+        return $field->scaffoldFormField($title);
+    }
+
+    /**
      * DB Type: Enum("Apple,Orange,Kiwi", "Kiwi")
      * Available methods:
      */
     public function enum($name)
     {
-        if ($this->isDBType($name, DBEnum::class))
+        if (!$this->isDBType($name, DBEnum::class))
         {
             return $this->returnError($name, 'enum');
         }
@@ -815,9 +912,6 @@ class Harvest
      * DB Type: -
      * Allowed relations: has_many | many_many | belongs_many_many
      * Available methods:
-     *
-     * Code example:
-        $harvest->link('ALink', 'Link'),
      */
     public function tag($name, $title = null, $source = [], $value = null, $titleField = 'Title')
     {
@@ -884,7 +978,199 @@ class Harvest
         );
 
         return $grid;
-        // return PointField::create($name, $title, $value, $image, $width, $height);
+    }
+
+    // public function point($name, $title = null, $value = "", $image = '', $width = 0, $height = 0)
+    // {
+    //     return PointField::create($name, $title, $value, $image, $width, $height);
+    // }
+
+    /**
+     * DB Type: -
+     * Available methods:
+     */
+    public function wrapper($children = null)
+    {
+        return Wrapper::create($children);
+    }
+
+    /**
+     * DB Type: *
+     * Available methods:
+     *
+     * Code example:
+        $harvest->autocomplete('Page', 'Page', '', Page::class, 'Title'),
+     */
+    public function autocomplete($name, $title = null, $value = '', $sourceClass = null, $sourceFields = null)
+    {
+        return AutoCompleteField::create($name, $title, $value, $sourceClass, $sourceFields);
+    }
+
+    /**
+     * DB Type: *
+     * Available methods:
+     *
+     * Code example:
+        $harvest->stringTag('Text', 'Text', [1 => 'Tag 1', 2 => 'Tag 2']),
+     */
+    public function stringTag($name, $title = null, $source = [], $value = null)
+    {
+        return StringTagField::create($name, $title, $source, $value);
+    }
+
+    /**
+     * DB Type: *
+     * Available methods:
+     *
+     * Code example:
+        $harvest->readonlyTag('Text', 'Text', [1 => 'Tag 1', 2 => 'Tag 2']),
+     */
+    // public function readonlyTag($name, $title = '', $source = [], $value = null, $titleField = 'Title')
+    // {
+    //     return ReadonlyTagField::create($name, $title, $source, $value, $titleField);
+    // }
+
+    /**
+     * DB Type: -
+     * Allowed relations: has_one
+     * Available methods:
+     *
+     * Code example:
+        $harvest->imageCoords('Image', 'Focus Point', true),
+        $harvest->imageCoords('Image', 'Focus Point'),
+     */
+    public function imageCoords($name, $title, $onlyCanvas = false, $cssGrid = false, $image = null, $XFieldName = null, $YFieldName = null, $xySumFieldName = null, $width = null, $height = null)
+    {
+        if (!$image)
+        {
+            $relation = $this->parent->getRelationType($name);
+
+            if (in_array($relation, ['has_one']))
+            {
+                $image = $this->parent->$name();
+            }
+
+            $XFieldName = $name .'-_1_-FocusPointX';
+            $YFieldName = $name .'-_1_-FocusPointY';
+            $xySumFieldName = 'filename';
+            $width = $image->getWidth();
+            $height = $image->getHeight();
+        }
+
+        return ImageCoordsField::create($title, $XFieldName, $YFieldName, $xySumFieldName, $image, $width, $height, $cssGrid, $onlyCanvas);
+    }
+
+    /**
+     * DB Type: -
+     * Allowed relations: has_one
+     * Available methods:
+     *
+     * Code example:
+        $harvest->focusPoint('FocusPoint', 'Focus Point', $this->Image()),
+     */
+    // public function focusPoint(string $name, ?string $title = null, ?Image $image = null)
+    // {
+    //     return FocusPointField::create($name, $title, $image);
+    // }
+
+    /**
+     * DB Type: -
+     * Allowed relations: has_one
+     * Available methods:
+     */
+    public function hasOneLink($relationName, $title = null, $linkConfig = [], $useAutocompleter = false)
+    {
+        return HasOneLinkField::create($this->parent, $relationName, $title, $linkConfig, $useAutocompleter);
+    }
+
+    // public function previewImage($name, $title = null, $value = null)
+    // {
+    //     return PreviewImageField::create($name, $title, $value);
+    // }
+
+    // public function anchorSelector($name, $title = null, $value = '', $maxLength = null, $form = null)
+    // {
+    //     return AnchorSelectorField::create($name, $title, $value, $maxLength, $form);
+    // }
+
+    /**
+     * DB Type: *
+     * Available methods:
+     */
+    public function siteTreeURLSegment($name, $title = null, $value = '', $maxLength = null, $form = null)
+    {
+        return SiteTreeURLSegmentField::create($name, $title, $value, $maxLength, $form);
+    }
+
+    /**
+     * DB Type: *
+     * Available methods:
+     */
+    public function htmlReadonly($name, $title = null, $value = null)
+    {
+        return HTMLReadonlyField::create($name, $title, $value);
+    }
+
+    // public function diff($name, $title = null, $value = null)
+    // {
+    //     return DiffField::create($name, $title, $value);
+    // }
+
+    // public function hasOneUpload(UploadField $original)
+    // {
+    //     return HasOneUploadField::create($original);
+    // }
+
+    /**
+     * DB Type:
+     *
+        'MyText' => EncryptedDBText::class,
+        'MyHTMLText' => EncryptedDBHTMLText::class,
+        'MyVarchar' => EncryptedDBVarchar::class,
+        'MyNumber' => EncryptedNumberField::class,
+        'MyIndexedVarchar' => EncryptedDBField::class,
+     * Available methods:
+     *
+     */
+    public function encrypt($name)
+    {
+        // https://github.com/goldfinch/silverstripe-encrypt/
+
+        if (EncryptHelper::isEncryptedField(get_class($this->parent), $name))
+        {
+            $this->parent->$name = $this->parent->dbObject($name)->getValue();
+        }
+
+        return $this->field($name);
+    }
+
+    /**
+     * DB Type: *
+     * Available methods:
+     */
+    public function country($name, $title = null, $source = [], $value = '', $form = null)
+    {
+        return CountryDropdownField::create($name, $title, $source, $value, $form);
+    }
+
+    /**
+     * DB Type: Phone
+     * Available methods:
+        $Phone.International
+        $Phone.National
+        $Phone.E164
+        $Phone.RFC3966
+        $Phone.URL
+     */
+    public function phone($name, $title = null, $options = [])
+    {
+        if (!$this->isDBType($name, DBPhone::class))
+        {
+            return $this->returnError($name, 'phone');
+        }
+
+        $field = new DBPhone($name, $options);
+        return $field->scaffoldFormField($title);
     }
 
     private function isDBType($name, $type)
