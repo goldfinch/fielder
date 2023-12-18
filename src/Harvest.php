@@ -108,6 +108,8 @@ class Harvest
     private $fields = null;
     private $initialFields = null;
     private $allFieldsCleared = false;
+    private $requiredFields = [];
+    private $error = null;
 
     private $parent = null;
 
@@ -150,7 +152,7 @@ class Harvest
         }
     }
 
-    public function clearAllFields()
+    public function clearAll()
     {
         foreach ($this->fields->flattenFields() as $field)
         {
@@ -164,6 +166,36 @@ class Harvest
         }
 
         $this->allFieldsCleared = true;
+    }
+
+    public function required($fields)
+    {
+        $this->setRequiredFields($fields);
+    }
+
+    public function setRequiredFields($fields)
+    {
+        $this->requiredFields = $fields;
+    }
+
+    public function getRequiredFields()
+    {
+        return $this->requiredFields;
+    }
+
+    public function addError($error)
+    {
+        $this->error = $error;
+    }
+
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    public function getFields()
+    {
+        return $this->fields;
     }
 
     /**
@@ -549,15 +581,29 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->grid('Services', 'Services'),
-        $harvest->grid('Services', 'Services', $this->Services()),
+        $harvest->grid('Services', 'Services')->build(),
+
+        $harvest->grid('Services', 'Services', $this->Services())->build(),
+
+        $harvest->grid('Cards', 'Cards')
+            ->config('default')
+            ->components([
+                'add',
+                'edit',
+            ])
+            ->remove([
+                'add',
+                'edit',
+                'copy',
+                'delete',
+            ])->build(),
      */
     public function grid($name, $title = null, SS_List $dataList = null, GridFieldConfig $config = null)
     {
         $grid = new Grid($this->fields, $this->parent);
         $grid->init($name, $title, $dataList, $config);
 
-        return $grid->grid();
+        return $grid;
     }
 
     /**
