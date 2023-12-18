@@ -2,7 +2,9 @@
 
 namespace Goldfinch\Harvest;
 
+use ReflectionClass;
 use Goldfinch\Harvest\Grid;
+use Illuminate\Support\Arr;
 use SilverStripe\Forms\Tab;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\Assets\Image;
@@ -27,6 +29,7 @@ use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LookupField;
 use SilverStripe\TagField\TagField;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\ListboxField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\NumericField;
@@ -109,7 +112,7 @@ class Harvest
     private $fields = null;
     private $initialFields = null;
     private $allFieldsCleared = false;
-    private $requiredFields = [];
+    private $requireFields = [];
     private $error = null;
 
     private $parent = null;
@@ -169,6 +172,65 @@ class Harvest
         $this->allFieldsCleared = true;
     }
 
+    public function clearAllCurrent()
+    {
+        $db = Config::inst()->get(get_class($this->parent), 'db', CONFIG::UNINHERITED);
+        $has_one = Config::inst()->get(get_class($this->parent), 'has_one', CONFIG::UNINHERITED);
+        $belongs_to = Config::inst()->get(get_class($this->parent), 'belongs_to', CONFIG::UNINHERITED);
+        $has_many = Config::inst()->get(get_class($this->parent), 'has_many', CONFIG::UNINHERITED);
+        $many_many = Config::inst()->get(get_class($this->parent), 'many_many', CONFIG::UNINHERITED);
+        $belongs_many_many = Config::inst()->get(get_class($this->parent), 'belongs_many_many', CONFIG::UNINHERITED);
+
+        if ($db)
+        {
+            $this->clear(array_keys($db));
+        }
+
+        if ($has_one)
+        {
+            $this->clear(array_keys($has_one));
+            $has_oneID = Arr::mapWithKeys($has_one, function ($item, $key) {
+                return [$key . 'ID' => $item];
+            });
+
+            $this->clear(array_keys($has_oneID));
+        }
+
+        if ($belongs_to)
+        {
+            $this->clear(array_keys($belongs_to));
+            $belongs_toID = Arr::mapWithKeys($belongs_to, function ($item, $key) {
+                return [$key . 'ID' => $item];
+            });
+            $this->clear(array_keys($belongs_toID));
+        }
+
+        if ($has_many)
+        {
+            $this->clear(array_keys($has_many));
+        }
+
+        if ($many_many)
+        {
+            $this->clear(array_keys($many_many));
+        }
+
+        if ($belongs_many_many)
+        {
+            $this->clear(array_keys($belongs_many_many));
+        }
+
+        // by some reason, 'FocusPoint' db type not being removed through clear()
+        // only works when `FocusPoint` field name renamed to sentence case `Focuspoint`
+        foreach($db as $k => $f)
+        {
+            if (strtolower($f) == 'focuspoint')
+            {
+                $this->clear(ucfirst(strtolower($k)));
+            }
+        }
+    }
+
     public function clearAllInTab($tab)
     {
         $fltFields = $this->fields->findTab($tab)->getChildren()->flattenFields();
@@ -190,19 +252,19 @@ class Harvest
         }
     }
 
-    public function required($fields)
+    public function require($fields)
     {
-        $this->setRequiredFields($fields);
+        $this->setRequireFields($fields);
     }
 
-    public function setRequiredFields($fields)
+    public function setRequireFields($fields)
     {
-        $this->requiredFields = $fields;
+        $this->requireFields = $fields;
     }
 
-    public function getRequiredFields()
+    public function getRequireFields()
     {
-        return $this->requiredFields;
+        return $this->requireFields;
     }
 
     public function addError($error)

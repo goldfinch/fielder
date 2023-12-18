@@ -9,39 +9,44 @@ use SilverStripe\Forms\CompositeValidator;
 
 class HarvestExtension extends DataExtension
 {
+    public function getCurrentHarvest($fields = null)
+    {
+        if (method_exists($this->owner, 'harvest'))
+        {
+            $harvest = new Harvest($fields ?? $this->owner->getCMSFields(), $this->owner);
+            $this->owner->harvest($harvest);
+
+            return $harvest;
+        }
+    }
+
     public function harvestFields($fields)
     {
-        $harvest = new Harvest($fields, $this);
-
-        $this->owner->goldfinchHarvest = $harvest;
-
-        return $this->owner->harvest($harvest);
+        return $this->getCurrentHarvest($fields);
     }
 
     public function harvestSettingsFields($fields)
     {
-        $harvest = new Harvest($fields, $this);
-
-        $this->owner->goldfinchHarvest = $harvest;
-
-        return $this->owner->harvestSettings($harvest);
+        return $this->getCurrentHarvest($fields);
     }
 
     public function harvestCompositeValidator($validator)
     {
-        if ($this->owner->goldfinchHarvest)
+        $harvest = $this->getCurrentHarvest();
+
+        if ($harvest)
         {
-            $validator->addValidator(RequiredFields::create($this->owner->goldfinchHarvest->getRequiredFields()));
+            $validator->addValidator(RequiredFields::create($harvest->getRequireFields()));
         }
     }
 
     public function harvestValidate($result)
     {
-        $error = $this->owner->goldfinchHarvest ? $this->owner->goldfinchHarvest->getError() : null;
+        $harvest = $this->getCurrentHarvest();
 
-        if ($error)
+        if ($harvest && $harvest->getError())
         {
-            $result->addError($error);
+            $result->addError($harvest->getError());
         }
     }
 
