@@ -13,7 +13,7 @@ class HarvestExtension extends DataExtension
     {
         $harvest = new Harvest($fields, $this);
 
-        $this->goldfinchHarvest = $harvest;
+        $this->owner->goldfinchHarvest = $harvest;
 
         return $this->owner->harvest($harvest);
     }
@@ -22,19 +22,22 @@ class HarvestExtension extends DataExtension
     {
         $harvest = new Harvest($fields, $this);
 
-        $this->goldfinchHarvest = $harvest;
+        $this->owner->goldfinchHarvest = $harvest;
 
         return $this->owner->harvestSettings($harvest);
     }
 
     public function harvestCompositeValidator($validator)
     {
-        $validator->addValidator(RequiredFields::create($this->goldfinchHarvest->getRequiredFields()));
+        if ($this->owner->goldfinchHarvest)
+        {
+            $validator->addValidator(RequiredFields::create($this->owner->goldfinchHarvest->getRequiredFields()));
+        }
     }
 
     public function harvestValidate($result)
     {
-        $error = $this->goldfinchHarvest->getError();
+        $error = $this->owner->goldfinchHarvest ? $this->owner->goldfinchHarvest->getError() : null;
 
         if ($error)
         {

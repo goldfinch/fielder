@@ -60,6 +60,7 @@ use SilverStripe\Forms\SingleLookupField;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\ORM\FieldType\DBDecimal;
 use SilverStripe\TagField\StringTagField;
+use DNADesign\Elemental\Models\BaseElement;
 use JonoM\FocusPoint\Forms\FocusPointField;
 use PhpTek\JSONText\ORM\FieldType\JSONText;
 use SilverStripe\Forms\GridField\GridField;
@@ -168,6 +169,27 @@ class Harvest
         $this->allFieldsCleared = true;
     }
 
+    public function clearAllInTab($tab)
+    {
+        $fltFields = $this->fields->findTab($tab)->getChildren()->flattenFields();
+
+        // Escpe some sensitive fields for BaseElement
+        if (is_subclass_of($this->getParent()->getOwner(), BaseElement::class))
+        {
+            $array = array_flip(array_keys($fltFields->map()->toArray()));
+            unset($array['Version']);
+            unset($array['AvailableGlobally']);
+            unset($array['VirtualLookupTitle']);
+            unset($array['TopPageID']);
+            unset($array['AbsoluteLink']);
+            unset($array['LiveLink']);
+            unset($array['StageLink']);
+            $array = array_flip($array);
+
+            $this->clear($array);
+        }
+    }
+
     public function required($fields)
     {
         $this->setRequiredFields($fields);
@@ -196,6 +218,11 @@ class Harvest
     public function getFields()
     {
         return $this->fields;
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
     }
 
     /**
