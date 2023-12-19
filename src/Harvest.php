@@ -29,6 +29,7 @@ use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LookupField;
 use SilverStripe\TagField\TagField;
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\ListboxField;
 use SilverStripe\Forms\LiteralField;
@@ -91,19 +92,15 @@ use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use SilverStripe\CMS\Forms\SiteTreeURLSegmentField;
 use SilverStripe\AssetAdmin\Forms\PreviewImageField;
 use Goldfinch\FocusPointExtra\Forms\ImageCoordsField;
-use SilverStripe\Forms\GridField\GridFieldDetailForm;
-use SilverStripe\Forms\GridField\GridFieldEditButton;
 use Innoweb\InternationalPhoneNumberField\ORM\DBPhone;
 use KevinGroeger\CodeEditorField\Forms\CodeEditorField;
 use Kinglozzer\MultiSelectField\Forms\MultiSelectField;
 use RyanPotter\SilverStripeColorField\Forms\ColorField;
-use SilverStripe\Forms\GridField\GridFieldAddNewButton;
-use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use Heyday\ColorPalette\Fields\GroupedColorPaletteField;
 use Goldfinch\FocusPointExtra\Forms\UploadFieldWithExtra;
 use LittleGiant\SilverStripeImagePoints\Forms\PointField;
 use NSWDPC\Forms\ImageSelectionField\ImageSelectionField;
-use SilverStripe\LinkField\Form\LinkField as SSLinkField;
+use SilverStripe\LinkField\Form\LinkField as LinkSSField;
 use Dynamic\CountryDropdownField\Fields\CountryDropdownField;
 use Goldfinch\FocusPointExtra\Forms\SortableUploadFieldWithExtra;
 
@@ -287,6 +284,50 @@ class Harvest
         return $this->parent;
     }
 
+    private function lookForSource(&$name, &$title, &$source)
+    {
+        if (empty($source))
+        {
+            $relation = $this->parent->getRelationType($name);
+
+            if ($relation && ($relation == 'has_one' || $relation == 'belongs_to'))
+            {
+                $object = $this->parent->$name();
+                $class = get_class($object);
+                $source = $class::get()->map();
+                if (!$title) $title = $name;
+                $name .= 'ID';
+            }
+            else if ($relation == 'many_many' || $relation == 'has_many' || $relation == 'belongs_many_many')
+            {
+                $object = $this->parent->$name();
+                $class = $object->dataClass;
+                $source = $class::get()->map();
+            }
+        }
+    }
+
+    private function lookForSourceObject(&$name, &$title, &$sourceObject)
+    {
+        if (!$sourceObject)
+        {
+            $relation = $this->parent->getRelationType($name);
+
+            if ($relation && ($relation == 'has_one' || $relation == 'belongs_to'))
+            {
+                $object = $this->parent->$name();
+                $sourceObject = get_class($object);
+                if (!$title) $title = $name;
+                $name .= 'ID';
+            }
+            else if ($relation == 'many_many' || $relation == 'has_many' || $relation == 'belongs_many_many')
+            {
+                $object = $this->parent->$name();
+                $sourceObject = $object->dataClass;
+            }
+        }
+    }
+
     /**
      * ! Internal general fields
      */
@@ -308,15 +349,7 @@ class Harvest
      */
     public function dropdown($name, $title = null, $source = [], $value = null)
     {
-        // if (empty($source))
-        // {
-        //     $relation = $this->parent->getRelationType($name);
-
-        //     if ($relation)
-        //     {
-        //         $source = $this->parent->$name()->map();
-        //     }
-        // }
+        $this->lookForSource($name, $title, $source);
 
         return DropdownField::create($name, $title, $source, $value);
     }
@@ -428,6 +461,8 @@ class Harvest
      */
     public function groupedDropdown($name, $title = null, $source = [], $value = null)
     {
+        $this->lookForSource($name, $title, $source);
+
         return GroupedDropdownField::create($name, $title, $source, $value);
     }
 
@@ -463,12 +498,14 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->optionset('Name', 'Title', [1 => 'Option 1', 2 => 'Option 2']),
+        $harvest->radio('Name', 'Title', [1 => 'Option 1', 2 => 'Option 2']),
      * Code example:
         $source = FooBar::get()->map()
      */
-    public function optionset($name, $title = null, $source = [], $value = null)
+    public function radio($name, $title = null, $source = [], $value = null)
     {
+        $this->lookForSource($name, $title, $source);
+
         return OptionsetField::create($name, $title, $source, $value);
     }
 
@@ -626,6 +663,7 @@ class Harvest
 
     /**
      * DB Type: *
+     * Suits relations: has_many | many_many | belongs_many_many
      * Available methods:
      *
      * Code example:
@@ -635,19 +673,35 @@ class Harvest
      */
     public function checkboxSet($name, $title = null, $source = [], $value = null)
     {
+        $relation = $this->parent->getRelationType($name);
+
+        if (in_array($relation, ['has_one', 'belongs_to']))
+        {
+            return $this->returnError($name, $name . ': do not use <b>checkboxSet</b> on <b>' . $relation . '</b>');
+        }
+
+        $this->lookForSource($name, $title, $source);
+
         return CheckboxSetField::create($name, $title, $source, $value);
     }
 
     /**
      * DB Type: *
-     * Allowed relations: has_one
+     * Allowed relations: has_one (!SiteTree)
      * Available methods:
      *
      * Code example:
-        $harvest->dropdownTree('PageID', 'Page', Page::class),
+        $harvest->dropdownTree('Page'),
      */
     public function dropdownTree($name, $title = null, $sourceObject = null, $keyField = 'ID', $labelField = 'TreeTitle', $showSearch = true)
     {
+        $this->lookForSourceObject($name, $title, $sourceObject);
+
+        if (!is_subclass_of(new $sourceObject, SiteTree::class))
+        {
+            return $this->returnError($name, $name . ': use <b>dropdownTree</b> only for a relationship that inherited <b>SiteTree</b> class');
+        }
+
         return TreeDropdownField::create($name, $title, $sourceObject, $keyField, $labelField, $showSearch);
     }
 
@@ -697,13 +751,23 @@ class Harvest
 
     /**
      * DB Type: *
+     * Suits relations: has_many | many_many | belongs_many_many
      * Available methods:
      *
      * Code example:
-        $harvest->listbox('List', 'List', [1 => 'Option 1', 2 => 'Option 2']),
+        $harvest->listbox('List'),
      */
-    public function listbox($name, $title = '', $source = [], $value = null, $size = null)
+    public function listbox($name, $title = null, $source = [], $value = null, $size = null)
     {
+        $relation = $this->parent->getRelationType($name);
+
+        if (in_array($relation, ['has_one', 'belongs_to']))
+        {
+            return $this->returnError($name, $name . ': do not use <b>listbox</b> on <b>' . $relation . '</b>');
+        }
+
+        $this->lookForSource($name, $title, $source);
+
         return ListboxField::create($name, $title, $source, $value, $size);
     }
 
@@ -793,7 +857,7 @@ class Harvest
     {
         if (!$this->isDBType($name, DBDecimal::class))
         {
-            return $this->returnError($name, 'decimal');
+            return $this->returnTypeError($name, 'decimal');
         }
 
         // public function decimal($name, $title = null, $value = '', $maxLength = null, $form = null)
@@ -811,7 +875,7 @@ class Harvest
     {
         if (!$this->isDBType($name, DBDouble::class))
         {
-            return $this->returnError($name, 'double');
+            return $this->returnTypeError($name, 'double');
         }
 
         // public function double($name, $title = null, $value = '', $maxLength = null, $form = null)
@@ -829,7 +893,7 @@ class Harvest
     {
         if (!$this->isDBType($name, DBFloat::class))
         {
-            return $this->returnError($name, 'float');
+            return $this->returnTypeError($name, 'float');
         }
 
         // public function float($name, $title = null, $value = '', $maxLength = null, $form = null)
@@ -847,7 +911,7 @@ class Harvest
     {
         if (!$this->isDBType($name, DBYear::class))
         {
-            return $this->returnError($name, 'year');
+            return $this->returnTypeError($name, 'year');
         }
 
         $field = new DBYear($name, $options = []);
@@ -862,7 +926,7 @@ class Harvest
     {
         if (!$this->isDBType($name, DBPercentage::class))
         {
-            return $this->returnError($name, 'percentage');
+            return $this->returnTypeError($name, 'percentage');
         }
 
         $field = new DBPercentage($name, $precision);
@@ -877,7 +941,7 @@ class Harvest
     {
         if (!$this->isDBType($name, DBInt::class))
         {
-            return $this->returnError($name, 'int');
+            return $this->returnTypeError($name, 'int');
         }
 
         $field = new DBInt($name, $defaultVal);
@@ -892,7 +956,7 @@ class Harvest
     {
         if (!$this->isDBType($name, DBBigInt::class))
         {
-            return $this->returnError($name, 'int');
+            return $this->returnTypeError($name, 'int');
         }
 
         $field = new DBBigInt($name, $defaultVal);
@@ -907,7 +971,7 @@ class Harvest
     {
         if (!$this->isDBType($name, DBLocale::class))
         {
-            return $this->returnError($name, 'int');
+            return $this->returnTypeError($name, 'int');
         }
 
         $field = new DBLocale($name, $size);
@@ -922,7 +986,7 @@ class Harvest
     {
         if (!$this->isDBType($name, DBEnum::class))
         {
-            return $this->returnError($name, 'enum');
+            return $this->returnTypeError($name, 'enum');
         }
 
         // public function enum($name, $title = null, $source = [], $value = null)
@@ -953,21 +1017,46 @@ class Harvest
      * ! External fields
      */
 
-    public function hasOneButton($relationName, $fieldName = null, $title = null, GridFieldConfig $customConfig = null, $useAutocompleter = true)
+    /**
+     * DB Type: -
+     * Allowed relations: has_one | belongs_to
+     * Available methods:
+     *
+        $harvest->objectLink('Project'),
+     */
+    public function objectLink($relationName, $fieldName = null, $title = null, GridFieldConfig $customConfig = null, $useAutocompleter = true)
     {
         return HasOneButtonField::create($this->parent, $relationName, $fieldName, $title, $customConfig, $useAutocompleter);
     }
 
     /**
      * DB Type: -
-     * Allowed relations: many_many
+     * Allowed relations: has_one | belongs_to
+     * Available methods:
+     */
+    public function object($relationName, $title = null, $linkConfig = [], $useAutocompleter = false)
+    {
+        return HasOneLinkField::create($this->parent, $relationName, $title, $linkConfig, $useAutocompleter);
+    }
+
+    /**
+     * DB Type: -
+     * Allowed relations: many_many | belongs_many_many
      * Available methods:
      *
      * Code example:
+        $harvest->multiSelect('Services'),
         $harvest->multiSelect('Services', 'Services', 'SortExtra'),
      */
     public function multiSelect($name, $title = null, $sort = false, $source = null, $titleField = 'Title')
     {
+        $relation = $this->parent->getRelationType($name);
+
+        if (!in_array($relation, ['many_many', 'belongs_many_many']))
+        {
+            return $this->returnError($name, $name . ': <b>multiSelect</b> is only for <b>many-many</b> relationship');
+        }
+
         return MultiSelectField::create($name, $title, $this->parent, $sort, $source, $titleField);
     }
 
@@ -1119,7 +1208,7 @@ class Harvest
      * Allowed relations: has_one
      * Available methods:
      */
-    public function anyLink($name, $title = null, $value = null)
+    public function inlineLink($name, $title = null, $value = null)
     {
         // $this->fields->removeByName($name . 'ID');
 
@@ -1130,8 +1219,14 @@ class Harvest
      * DB Type: SilverStripe\LinkField\Models\Link;
      * Allowed relations: has_many | many_many | belongs_many_many
      * Available methods:
+     *
+     * * Required $has_one on SilverStripe\LinkField\Models\Link
+     * eg:
+      private static $has_one = [
+          'Page' => \Page::class,
+      ];
      */
-    public function anyLinks($name, $title = null, SS_List $dataList = null)
+    public function inlineLinks($name, $title = null, SS_List $dataList = null)
     {
         // $this->fields->removeByName($name . 'ID');
 
@@ -1143,11 +1238,11 @@ class Harvest
      * Allowed relations: has_many | many_many | belongs_many_many
      * Available methods:
      */
-    public function sslink($name, $title = null, $value = null)
+    public function linkSS($name, $title = null, $value = null)
     {
         // $this->fields->removeByName($name . 'ID');
 
-        return SSLinkField::create($name, $title, $value);
+        return LinkSSField::create($name, $title, $value);
     }
 
     /**
@@ -1182,13 +1277,21 @@ class Harvest
      */
     public function tag($name, $title = null, $source = [], $value = null, $titleField = 'Title')
     {
-        if (!$source)
-        {
-            $relation = $this->parent->getRelationType($name);
+        $relation = $this->parent->getRelationType($name);
 
-            if (in_array($relation, ['has_many', 'many_many', 'belongs_many_many']))
+        if (!in_array($relation, ['has_many', 'many_many', 'belongs_many_many']))
+        {
+            return $this->returnError($name, $name . ': <b>multiSelect</b> is only for <b>many-many</b> relationship');
+        }
+
+        if (empty($source))
+        {
+            $this->lookForSourceObject($name, $title, $source);
+
+            if (is_string($source))
             {
-                $source = $this->parent->$name();
+                $source = $source::get();
+                $value = $this->parent->$name();
             }
         }
 
@@ -1234,15 +1337,13 @@ class Harvest
             }
         }
 
-        $grid = $this->grid($name, $title, $source, $gridconfig);
-
-        // TODO: add components through Grid class instead
-        $grid->getConfig()->addComponents(
-            GridFieldAddNewButton::create(),
-            GridFieldDetailForm::create(),
-            GridFieldDeleteAction::create(),
-            GridFieldEditButton::create(),
-        );
+        $grid = $this->grid($name, $title, $source, $gridconfig)
+            ->components([
+                'add',
+                'detail-form',
+                'delete',
+                'edit',
+            ])->build();
 
         return $grid;
     }
@@ -1270,6 +1371,8 @@ class Harvest
      */
     public function autocomplete($name, $title = null, $value = '', $sourceClass = null, $sourceFields = null)
     {
+        // $this->lookForSourceObject($name, $title, $sourceClass);
+
         return AutoCompleteField::create($name, $title, $value, $sourceClass, $sourceFields);
     }
 
@@ -1278,10 +1381,12 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->stringTag('Text', 'Text', [1 => 'Tag 1', 2 => 'Tag 2']),
+        $harvest->stringTag('Varchar', 'Varchar', CardItem::get()),
      */
     public function stringTag($name, $title = null, $source = [], $value = null)
     {
+        // $this->lookForSource($name, $title, $source);
+
         return StringTagField::create($name, $title, $source, $value);
     }
 
@@ -1339,16 +1444,6 @@ class Harvest
     // {
     //     return FocusPointField::create($name, $title, $image);
     // }
-
-    /**
-     * DB Type: -
-     * Allowed relations: has_one
-     * Available methods:
-     */
-    public function hasOneLink($relationName, $title = null, $linkConfig = [], $useAutocompleter = false)
-    {
-        return HasOneLinkField::create($this->parent, $relationName, $title, $linkConfig, $useAutocompleter);
-    }
 
     // public function previewImage($name, $title = null, $value = null)
     // {
@@ -1453,7 +1548,7 @@ class Harvest
     {
         if (!$this->isDBType($name, DBPhone::class))
         {
-            return $this->returnError($name, 'phone');
+            return $this->returnTypeError($name, 'phone');
         }
 
         $field = new DBPhone($name, $options);
@@ -1491,8 +1586,13 @@ class Harvest
         return get_class($this->parent->dbObject($name)) == $type;
     }
 
-    private function returnError($name, $type)
+    private function returnTypeError($name, $type)
     {
-        return $this->literal($name . '_error', '<span style="color: red"><b>' . $name . '</b> is not type of ' . $type . '</span>');
+        return $this->literal($name . '_error', '<div class="alert alert-warning"><b>' . $name . '</b> is not type of ' . $type . '</div>');
+    }
+
+    private function returnError($name, $message)
+    {
+        return $this->literal($name . '_error', '<div class="alert alert-warning">' . $message . '</div>');
     }
 }

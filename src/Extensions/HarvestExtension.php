@@ -22,12 +22,20 @@ class HarvestExtension extends DataExtension
 
     public function harvestFields($fields)
     {
-        return $this->getCurrentHarvest($fields);
+        $harvest = $this->getCurrentHarvest($fields);
+
+        $this->owner->extend('updateHarvest', $harvest);
+
+        return $harvest;
     }
 
     public function harvestSettingsFields($fields)
     {
-        return $this->getCurrentHarvest($fields);
+        $harvest = $this->getCurrentHarvest($fields);
+
+        $this->owner->extend('updateHarvestSettings', $harvest);
+
+        return $harvest;
     }
 
     public function harvestCompositeValidator($validator)
@@ -36,6 +44,8 @@ class HarvestExtension extends DataExtension
 
         if ($harvest)
         {
+            $this->owner->extend('updateHarvestCompositeValidator', $harvest);
+
             $validator->addValidator(RequiredFields::create($harvest->getRequireFields()));
         }
     }
@@ -43,6 +53,8 @@ class HarvestExtension extends DataExtension
     public function harvestValidate($result)
     {
         $harvest = $this->getCurrentHarvest();
+
+        $this->owner->extend('updateHarvestValidate', $harvest);
 
         if ($harvest && $harvest->getError())
         {

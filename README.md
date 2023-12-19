@@ -6,14 +6,15 @@ public function harvest(Harvest $harvest)
 {
     $harvest->clear('Content');
     // $harvest->clearAll();
+    // $harvest->clearAllCurrent();
     // $harvest->addError('Error message');
-    $harvest->required([
+    $harvest->require([
         'Color',
         'Varchar',
         'Icon',
     ]);
 
-    return $harvest->fields([
+    $harvest->fields([
         'Root.Main' => [
             $harvest->colorPicker('Color'),
             $harvest->string('Varchar'),
@@ -31,11 +32,11 @@ public function harvestSettings(Harvest $harvest)
 {
     $harvest->clear('ShowInMenus');
 
-    $harvest->required([
+    $harvest->require([
         'ShowInFooter'
     ]);
 
-    return $harvest->getFields();
+    // $harvest->getFields();
 }
 ```
 
@@ -50,4 +51,60 @@ class Page {
 
   ...
 }
+```
+
+available extends
+
+```
+public function updateHarvest(Harvest $harvest)
+{
+    // ..
+}
+public function updateHarvestSettings(Harvest $harvest)
+{
+    // ..
+}
+public function updateHarvestCompositeValidator(Harvest $harvest)
+{
+    // ..
+}
+public function updateHarvestValidate(Harvest $harvest)
+{
+    // ..
+}
+```
+
+
+
+has_one | belongs_to
+```
+dropdown
+groupedDropdown
+radio
+dropdownTree
+objectLink
+object
+autocomplete
+// - selectionGroup
+```
+
+has_many | many_many | belongs_many_many
+```
+checkboxSet
+listbox
+checkboxSet
+tag
+```
+
+many_many | belongs_many_many
+```
+multiSelect
+```
+
+links
+```
+link
+linkSS
+inlineLink
+inlineLinks
 ```
