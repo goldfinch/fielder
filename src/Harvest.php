@@ -108,7 +108,7 @@ class Harvest
 {
     private $fields = null;
     private $initialFields = null;
-    private $allFieldsCleared = false;
+    private $allFieldsRemoved = false;
     private $requireFields = [];
     private $error = null;
 
@@ -126,7 +126,7 @@ class Harvest
         return $this->parent->dbObject($name)->scaffoldFormField($title);
     }
 
-    public function clear($fields)
+    public function remove($fields)
     {
         $this->fields->removeByName($fields);
     }
@@ -143,7 +143,7 @@ class Harvest
 
     public function dataField($name)
     {
-        if ($this->allFieldsCleared)
+        if ($this->allFieldsRemoved)
         {
             return $this->initialFields->dataFieldByName($name);
         }
@@ -153,7 +153,7 @@ class Harvest
         }
     }
 
-    public function clearAll()
+    public function removeAll()
     {
         foreach ($this->fields->flattenFields() as $field)
         {
@@ -166,10 +166,10 @@ class Harvest
             }
         }
 
-        $this->allFieldsCleared = true;
+        $this->allFieldsRemoved = true;
     }
 
-    public function clearAllCurrent()
+    public function removeAllCurrent()
     {
         $db = Config::inst()->get(get_class($this->parent), 'db', CONFIG::UNINHERITED);
         $has_one = Config::inst()->get(get_class($this->parent), 'has_one', CONFIG::UNINHERITED);
@@ -180,55 +180,55 @@ class Harvest
 
         if ($db)
         {
-            $this->clear(array_keys($db));
+            $this->remove(array_keys($db));
         }
 
         if ($has_one)
         {
-            $this->clear(array_keys($has_one));
+            $this->remove(array_keys($has_one));
             $has_oneID = Arr::mapWithKeys($has_one, function ($item, $key) {
                 return [$key . 'ID' => $item];
             });
 
-            $this->clear(array_keys($has_oneID));
+            $this->remove(array_keys($has_oneID));
         }
 
         if ($belongs_to)
         {
-            $this->clear(array_keys($belongs_to));
+            $this->remove(array_keys($belongs_to));
             $belongs_toID = Arr::mapWithKeys($belongs_to, function ($item, $key) {
                 return [$key . 'ID' => $item];
             });
-            $this->clear(array_keys($belongs_toID));
+            $this->remove(array_keys($belongs_toID));
         }
 
         if ($has_many)
         {
-            $this->clear(array_keys($has_many));
+            $this->remove(array_keys($has_many));
         }
 
         if ($many_many)
         {
-            $this->clear(array_keys($many_many));
+            $this->remove(array_keys($many_many));
         }
 
         if ($belongs_many_many)
         {
-            $this->clear(array_keys($belongs_many_many));
+            $this->remove(array_keys($belongs_many_many));
         }
 
-        // by some reason, 'FocusPoint' db type not being removed through clear()
+        // by some reason, 'FocusPoint' db type not being removed through remove()
         // only works when `FocusPoint` field name renamed to sentence case `Focuspoint`
         foreach($db as $k => $f)
         {
             if (strtolower($f) == 'focuspoint')
             {
-                $this->clear(ucfirst(strtolower($k)));
+                $this->remove(ucfirst(strtolower($k)));
             }
         }
     }
 
-    public function clearAllInTab($tab)
+    public function removeAllInTab($tab)
     {
         $fltFields = $this->fields->findTab($tab)->getChildren()->flattenFields();
 
@@ -245,7 +245,7 @@ class Harvest
             unset($array['StageLink']);
             $array = array_flip($array);
 
-            $this->clear($array);
+            $this->remove($array);
         }
     }
 

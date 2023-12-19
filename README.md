@@ -4,9 +4,9 @@ for getCMSFields
 ```
 public function harvest(Harvest $harvest)
 {
-    $harvest->clear('Content');
-    // $harvest->clearAll();
-    // $harvest->clearAllCurrent();
+    $harvest->remove('Content');
+    // $harvest->removeAll();
+    // $harvest->removeAllCurrent();
     // $harvest->addError('Error message');
     $harvest->require([
         'Color',
@@ -30,7 +30,7 @@ for getSettingsFields (SiteTree only)
 ```
 public function harvestSettings(Harvest $harvest)
 {
-    $harvest->clear('ShowInMenus');
+    $harvest->remove('ShowInMenus');
 
     $harvest->require([
         'ShowInFooter'
