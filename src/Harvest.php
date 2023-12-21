@@ -9,7 +9,6 @@ use SilverStripe\Forms\Tab;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\Assets\Image;
 use SilverStripe\Forms\TabSet;
-use BetterBrief\GoogleMapField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Group;
 use SilverStripe\Forms\DateField;
@@ -64,6 +63,8 @@ use SilverStripe\Forms\SingleLookupField;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\ORM\FieldType\DBDecimal;
 use SilverStripe\TagField\StringTagField;
+use Goldfinch\GoogleFields\Forms\MapField;
+use Goldfinch\GoogleFields\Forms\PlaceField;
 use DNADesign\Elemental\Models\BaseElement;
 use JonoM\FocusPoint\Forms\FocusPointField;
 use PhpTek\JSONText\ORM\FieldType\JSONText;
@@ -1163,29 +1164,30 @@ class Harvest
 
     /**
      * DB Type:
-        'Latitude' => 'Varchar',
-        'Longitude' => 'Varchar',
-        'Zoom' => 'Int',
+        'Place' => 'Place',
      * Available methods:
      * .env required:
         APP_GOOGLE_MAPS_KEY=""
-     * Code example:
-        $harvest->map('Map', [
-            'show_search_box' => false,
-            'map' => [
-                'mapTypeId' => 'satellite',
-            ]
-        ]),
-     */
-    public function map($title, $options = [])
-    {
-        // $this->fields->removeByName([
-        //     'Latitude',
-        //     'Longitude',
-        //     'Zoom',
-        // ]);
 
-        return GoogleMapField::create($this->parent, $title, $options);
+     * See https://github.com/goldfinch/google-fields
+     */
+    public function place($name, $title = null, $value = "")
+    {
+        return PlaceField::create($name, $title, $value);
+    }
+
+    /**
+     * DB Type:
+        'Map' => 'Map',
+     * Available methods:
+     * .env required:
+        APP_GOOGLE_MAPS_KEY=""
+
+     * See https://github.com/goldfinch/google-fields
+     */
+    public function map($name, $title = null, $value = "")
+    {
+        return MapField::create($name, $title, $value);
     }
 
     /**
