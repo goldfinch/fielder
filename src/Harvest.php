@@ -1415,6 +1415,8 @@ class Harvest
      */
     public function imageCoords($name, $title, $onlyCanvas = false, $cssGrid = false, $image = null, $XFieldName = null, $YFieldName = null, $xySumFieldName = null, $width = null, $height = null)
     {
+        // TODO: ImageCoordsField::create($this, 'Image'),
+
         if (!$image)
         {
             $relation = $this->parent->getRelationType($name);
@@ -1432,6 +1434,12 @@ class Harvest
         }
 
         return ImageCoordsField::create($title, $XFieldName, $YFieldName, $xySumFieldName, $image, $width, $height, $cssGrid, $onlyCanvas);
+    }
+
+    // TODO
+    public function imageEditableGrid()
+    {
+        // GridField::create('ImageAttributes', 'Images', $this->Images(), GridFieldManyManyFocusConfig::create()),
     }
 
     /**
