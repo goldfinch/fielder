@@ -396,7 +396,7 @@ class Harvest
     /**
      * --
      */
-    public function action($action, $title = "", $form = null)
+    public function action($action, $title = '', $form = null)
     {
         return FormAction::create($action, $title, $form);
     }
@@ -407,7 +407,7 @@ class Harvest
      * DB Type: *
      * Available methods:
      */
-    public function passwordConfirmed($name, $title = null, $value = "", $form = null, $showOnClick = false, $titleConfirmField = null)
+    public function passwordConfirmed($name, $title = null, $value = '', $form = null, $showOnClick = false, $titleConfirmField = null)
     {
         return ConfirmedPasswordField::create($name, $title, $value, $form, $showOnClick, $titleConfirmField);
     }
@@ -480,7 +480,7 @@ class Harvest
      * DB Type: Money
      * Available methods:
      */
-    public function money($name, $title = null, $value = "")
+    public function money($name, $title = null, $value = '')
     {
         return MoneyField::create($name, $title, $value);
     }
@@ -1167,11 +1167,11 @@ class Harvest
         'Place' => 'Place',
      * Available methods:
      * .env required:
-        APP_GOOGLE_MAPS_KEY=""
+        APP_GOOGLE_MAPS_KEY=''
 
      * See https://github.com/goldfinch/google-fields
      */
-    public function place($name, $title = null, $value = "")
+    public function place($name, $title = null, $value = '')
     {
         return PlaceField::create($name, $title, $value);
     }
@@ -1181,11 +1181,11 @@ class Harvest
         'Map' => 'Map',
      * Available methods:
      * .env required:
-        APP_GOOGLE_MAPS_KEY=""
+        APP_GOOGLE_MAPS_KEY=''
 
      * See https://github.com/goldfinch/google-fields
      */
-    public function map($name, $title = null, $value = "")
+    public function map($name, $title = null, $value = '')
     {
         return MapField::create($name, $title, $value);
     }
@@ -1350,7 +1350,7 @@ class Harvest
         return $grid;
     }
 
-    // public function point($name, $title = null, $value = "", $image = '', $width = 0, $height = 0)
+    // public function point($name, $title = null, $value = '', $image = '', $width = 0, $height = 0)
     // {
     //     return PointField::create($name, $title, $value, $image, $width, $height);
     // }
