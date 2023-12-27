@@ -92,18 +92,18 @@ use SilverStripe\Forms\GridField\GridFieldConfig;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use SilverStripe\CMS\Forms\SiteTreeURLSegmentField;
 use SilverStripe\AssetAdmin\Forms\PreviewImageField;
-use Goldfinch\FocusPointExtra\Forms\ImageCoordsField;
+use Goldfinch\ImageEditor\Forms\ImageCoordsField;
 use Innoweb\InternationalPhoneNumberField\ORM\DBPhone;
 use KevinGroeger\CodeEditorField\Forms\CodeEditorField;
 use Kinglozzer\MultiSelectField\Forms\MultiSelectField;
 use RyanPotter\SilverStripeColorField\Forms\ColorField;
 use Heyday\ColorPalette\Fields\GroupedColorPaletteField;
-use Goldfinch\FocusPointExtra\Forms\UploadFieldWithExtra;
+use Goldfinch\ImageEditor\Forms\EditableUploadField;
 use LittleGiant\SilverStripeImagePoints\Forms\PointField;
 use NSWDPC\Forms\ImageSelectionField\ImageSelectionField;
 use SilverStripe\LinkField\Form\LinkField as LinkSSField;
 use Dynamic\CountryDropdownField\Fields\CountryDropdownField;
-use Goldfinch\FocusPointExtra\Forms\SortableUploadFieldWithExtra;
+use Goldfinch\ImageEditor\Forms\EditableSortableUploadField;
 
 class Harvest
 {
@@ -1071,7 +1071,7 @@ class Harvest
      */
     public function media($name, $title = null)
     {
-        return UploadFieldWithExtra::create($name, $title, $this->fields, $this->parent)->getFields();
+        return EditableUploadField::create($name, $title, $this->fields, $this->parent)->getFields();
     }
 
     /**
@@ -1084,7 +1084,7 @@ class Harvest
      */
     public function mediaSortable($name, $title = null)
     {
-        return SortableUploadFieldWithExtra::create($name, $title, $this->fields, $this->parent)->getFields();
+        return EditableSortableUploadField::create($name, $title, $this->fields, $this->parent)->getFields();
     }
 
     /**

@@ -33,7 +33,7 @@ use Goldfinch\Helpers\Forms\GridField\GridFieldManyManyConfig;
 use Symbiote\GridFieldExtensions\GridFieldConfigurablePaginator;
 use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
-use Goldfinch\FocusPointExtra\Forms\GridField\GridFieldManyManyFocusConfig;
+use Goldfinch\ImageEditor\Forms\GridField\GridFieldManyManyFocusConfig;
 use Axllent\MetaEditor\Forms\GridField\GridFieldLevelup;
 
 class Grid
