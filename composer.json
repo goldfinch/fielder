@@ -1,14 +1,24 @@
 {
     "name": "goldfinch/harvest",
-    "description": "",
+    "description": "Field manager and orginizer for Silverstripe",
     "type": "silverstripe-vendormodule",
     "keywords": [
-        "silverstripe"
+        "silverstripe",
+        "harvest",
+        "harvest-silverstripe",
+        "harvest-manager",
+        "fields-manager",
+        "fields-orginizer",
+        "fields-orginizer-silverstripe",
+        "fields-manager-silverstripe"
     ],
     "license": "MIT",
-    "authors": [{
-        "name": "Artem Karasev"
-    }],
+    "authors": [
+        {
+            "name": "Art Karasev",
+            "email": "art.karasev@proton.me"
+        }
+    ],
     "require": {
         "php": ">=8.0",
         "silverstripe/framework": "^5.0",

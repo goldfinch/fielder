@@ -468,7 +468,7 @@ class Harvest
     }
 
     /**
-     * DB Type: *
+     * DB Type: HTMLText
      * Available methods:
      */
     public function html($name, $title = null, $value = '', $config = null)
