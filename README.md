@@ -16,9 +16,7 @@ composer require goldfinch/harvest
 
 ## Usage
 
-You can use `harvest` implementation instead of general `getCMSFields`.
-
-#### Add `harvest` method to your DataObject/Page
+Add `harvest` method to your DataObject/Page
 
 ```php
 use SilverStripe\ORM\DataObject;
@@ -51,7 +49,7 @@ MyAwesomeModel extends DataObject
 }
 ```
 
-#### Add `harvestSettings` method to your `SiteTree` page to manage settings fields (insetead of `getSettingsFields`)
+Add `harvestSettings` method to your `SiteTree` page to manage settings fields (insetead of `getSettingsFields`)
 
 ```php
 use SilverStripe\CMS\Model\SiteTree;
@@ -68,7 +66,7 @@ MyAwesomePage extends SiteTree
 }
 ```
 
-#### If for some reason you need to keep `getCMSFields` or `getSettingsFields` but want to use `harvest`, you can do that. Just don't use trait and declare both methods as shown below.
+If for some reason you need to keep `getCMSFields` or `getSettingsFields` but want to use `harvest`, you can do that. Just don't use trait and declare both methods as shown below.
 
 ```php
 use SilverStripe\CMS\Model\SiteTree;
