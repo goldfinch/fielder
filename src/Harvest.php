@@ -257,7 +257,7 @@ class Harvest
 
     public function setRequireFields($fields)
     {
-        $this->requireFields = $fields;
+        $this->requireFields = is_array($fields) ? $fields : [$fields];
     }
 
     public function getRequireFields()
@@ -851,7 +851,7 @@ class Harvest
      */
 
     /**
-     * DB Type: *
+     * DB Type: Decimal
      * Available methods:
      */
     public function decimal($name, $title = null, $wholeSize = 9, $decimalSize = 2, $defaultValue = 0)
@@ -869,7 +869,7 @@ class Harvest
     }
 
     /**
-     * DB Type: *
+     * DB Type: Double
      * Available methods:
      */
     public function double($name, $title = null, $defaultVal = 0)
@@ -887,7 +887,7 @@ class Harvest
     }
 
     /**
-     * DB Type: *
+     * DB Type: Float
      * Available methods:
      */
     public function float($name, $title = null, $defaultVal = 0)

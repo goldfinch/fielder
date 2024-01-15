@@ -20,9 +20,20 @@ class HarvestExtension extends DataExtension
         }
     }
 
+    public function getCurrentHarvestSettings($fields = null)
+    {
+        if (method_exists($this->owner, 'harvestSettings'))
+        {
+            $harvest = new Harvest($fields ?? $this->owner->getSettingsFields(), $this->owner);
+            $this->owner->harvestSettings($harvest);
+
+            return $harvest;
+        }
+    }
+
     public function harvestFields($fields)
     {
-        $harvest = $this->getCurrentHarvest($fields);
+        $harvest = $this->owner->getCurrentHarvest($fields);
 
         $this->owner->extend('updateHarvest', $harvest);
 
@@ -31,7 +42,7 @@ class HarvestExtension extends DataExtension
 
     public function harvestSettingsFields($fields)
     {
-        $harvest = $this->getCurrentHarvest($fields);
+        $harvest = $this->owner->getCurrentHarvestSettings($fields);
 
         $this->owner->extend('updateHarvestSettings', $harvest);
 
@@ -40,7 +51,7 @@ class HarvestExtension extends DataExtension
 
     public function harvestCompositeValidator($validator)
     {
-        $harvest = $this->getCurrentHarvest();
+        $harvest = $this->owner->getCurrentHarvest();
 
         if ($harvest)
         {
@@ -52,7 +63,7 @@ class HarvestExtension extends DataExtension
 
     public function harvestValidate($result)
     {
-        $harvest = $this->getCurrentHarvest();
+        $harvest = $this->owner->getCurrentHarvest();
 
         $this->owner->extend('updateHarvestValidate', $harvest);
 
@@ -66,7 +77,7 @@ class HarvestExtension extends DataExtension
     {
         if (method_exists($this->owner, 'harvest'))
         {
-            $this->harvestCompositeValidator($compositeValidator);
+            $this->owner->harvestCompositeValidator($compositeValidator);
         }
     }
 
@@ -74,7 +85,7 @@ class HarvestExtension extends DataExtension
     {
         if (method_exists($this->owner, 'harvest'))
         {
-            $this->harvestFields($fields);
+            $this->owner->harvestFields($fields);
         }
     }
 
@@ -82,7 +93,7 @@ class HarvestExtension extends DataExtension
     {
         if (method_exists($this->owner, 'harvestSettings'))
         {
-            $this->harvestSettingsFields($fields);
+            $this->owner->harvestSettingsFields($fields);
         }
     }
 
@@ -90,7 +101,7 @@ class HarvestExtension extends DataExtension
     {
         if (method_exists($this->owner, 'harvest'))
         {
-            $this->harvestValidate($result);
+            $this->owner->harvestValidate($result);
         }
     }
 }
