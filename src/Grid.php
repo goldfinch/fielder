@@ -103,12 +103,16 @@ class Grid
 
     public function init($name, $title, $dataList, $config)
     {
-        if (!$dataList)
-        {
+        if (!$dataList) {
             $relation = $this->parent->getRelationType($name);
 
-            if (in_array($relation, ['has_many', 'many_many', 'belongs_many_many']))
-            {
+            if (
+                in_array($relation, [
+                    'has_many',
+                    'many_many',
+                    'belongs_many_many',
+                ])
+            ) {
                 $dataList = $this->parent->$name();
             }
         }
@@ -125,20 +129,14 @@ class Grid
 
     public function config($config)
     {
-        if (isset($this->configs[$config]))
-        {
-            if (is_string($this->configs[$config]))
-            {
+        if (isset($this->configs[$config])) {
+            if (is_string($this->configs[$config])) {
                 $class = $this->configs[$config];
                 $this->grid->setConfig(new $class());
-            }
-            else if (is_array($this->configs[$config]))
-            {
+            } elseif (is_array($this->configs[$config])) {
                 $this->components($this->configs[$config]);
             }
-        }
-        else
-        {
+        } else {
             $this->grid->setConfig($config);
         }
 
@@ -147,22 +145,21 @@ class Grid
 
     public function remove($components)
     {
-        if (!empty($components))
-        {
-            foreach($components as $component => $args)
-            {
-                if (is_array($args))
-                {
-                    if (isset($this->components[$component]))
-                    {
-                        $this->grid->getConfig()->removeComponentsByType($this->components[$component]);
+        if (!empty($components)) {
+            foreach ($components as $component => $args) {
+                if (is_array($args)) {
+                    if (isset($this->components[$component])) {
+                        $this->grid
+                            ->getConfig()
+                            ->removeComponentsByType(
+                                $this->components[$component],
+                            );
                     }
-                }
-                else
-                {
-                    if (isset($this->components[$args]))
-                    {
-                        $this->grid->getConfig()->removeComponentsByType($this->components[$args]);
+                } else {
+                    if (isset($this->components[$args])) {
+                        $this->grid
+                            ->getConfig()
+                            ->removeComponentsByType($this->components[$args]);
                     }
                 }
             }
@@ -173,22 +170,21 @@ class Grid
 
     public function components($components)
     {
-        if (!empty($components))
-        {
-            foreach($components as $component => $args)
-            {
-                if (is_array($args))
-                {
-                    if (isset($this->components[$component]))
-                    {
-                        $this->grid->getConfig()->addComponent(new $this->components[$component](...$args));
+        if (!empty($components)) {
+            foreach ($components as $component => $args) {
+                if (is_array($args)) {
+                    if (isset($this->components[$component])) {
+                        $this->grid
+                            ->getConfig()
+                            ->addComponent(
+                                new ($this->components[$component])(...$args),
+                            );
                     }
-                }
-                else
-                {
-                    if (isset($this->components[$args]))
-                    {
-                        $this->grid->getConfig()->addComponent(new $this->components[$args]());
+                } else {
+                    if (isset($this->components[$args])) {
+                        $this->grid
+                            ->getConfig()
+                            ->addComponent(new ($this->components[$args])());
                     }
                 }
             }

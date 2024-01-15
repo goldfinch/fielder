@@ -1,7 +1,6 @@
 ---
 Name: goldfinch-harvest
 ---
-
 SilverStripe\ORM\DataObject:
   extensions:
     - Goldfinch\Harvest\Extensions\HarvestExtension

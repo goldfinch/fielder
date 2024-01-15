@@ -134,8 +134,7 @@ class Harvest
 
     public function fields($fieldsList)
     {
-        foreach ($fieldsList as $tab => $list)
-        {
+        foreach ($fieldsList as $tab => $list) {
             $this->fields->addFieldsToTab($tab, $list);
         }
 
@@ -144,25 +143,17 @@ class Harvest
 
     public function dataField($name)
     {
-        if ($this->allFieldsRemoved)
-        {
+        if ($this->allFieldsRemoved) {
             return $this->initialFields->dataFieldByName($name);
-        }
-        else
-        {
+        } else {
             return $this->fields->dataFieldByName($name);
         }
     }
 
     public function removeAll()
     {
-        foreach ($this->fields->flattenFields() as $field)
-        {
-            if (!in_array(get_class($field), [
-              Tab::class,
-              TabSet::class,
-            ]))
-            {
+        foreach ($this->fields->flattenFields() as $field) {
+            if (!in_array(get_class($field), [Tab::class, TabSet::class])) {
                 $this->fields->removeByName($field->getName());
             }
         }
@@ -172,20 +163,42 @@ class Harvest
 
     public function removeAllCurrent()
     {
-        $db = Config::inst()->get(get_class($this->parent), 'db', CONFIG::UNINHERITED);
-        $has_one = Config::inst()->get(get_class($this->parent), 'has_one', CONFIG::UNINHERITED);
-        $belongs_to = Config::inst()->get(get_class($this->parent), 'belongs_to', CONFIG::UNINHERITED);
-        $has_many = Config::inst()->get(get_class($this->parent), 'has_many', CONFIG::UNINHERITED);
-        $many_many = Config::inst()->get(get_class($this->parent), 'many_many', CONFIG::UNINHERITED);
-        $belongs_many_many = Config::inst()->get(get_class($this->parent), 'belongs_many_many', CONFIG::UNINHERITED);
+        $db = Config::inst()->get(
+            get_class($this->parent),
+            'db',
+            CONFIG::UNINHERITED,
+        );
+        $has_one = Config::inst()->get(
+            get_class($this->parent),
+            'has_one',
+            CONFIG::UNINHERITED,
+        );
+        $belongs_to = Config::inst()->get(
+            get_class($this->parent),
+            'belongs_to',
+            CONFIG::UNINHERITED,
+        );
+        $has_many = Config::inst()->get(
+            get_class($this->parent),
+            'has_many',
+            CONFIG::UNINHERITED,
+        );
+        $many_many = Config::inst()->get(
+            get_class($this->parent),
+            'many_many',
+            CONFIG::UNINHERITED,
+        );
+        $belongs_many_many = Config::inst()->get(
+            get_class($this->parent),
+            'belongs_many_many',
+            CONFIG::UNINHERITED,
+        );
 
-        if ($db)
-        {
+        if ($db) {
             $this->remove(array_keys($db));
         }
 
-        if ($has_one)
-        {
+        if ($has_one) {
             $this->remove(array_keys($has_one));
             $has_oneID = Arr::mapWithKeys($has_one, function ($item, $key) {
                 return [$key . 'ID' => $item];
@@ -194,36 +207,33 @@ class Harvest
             $this->remove(array_keys($has_oneID));
         }
 
-        if ($belongs_to)
-        {
+        if ($belongs_to) {
             $this->remove(array_keys($belongs_to));
-            $belongs_toID = Arr::mapWithKeys($belongs_to, function ($item, $key) {
+            $belongs_toID = Arr::mapWithKeys($belongs_to, function (
+                $item,
+                $key,
+            ) {
                 return [$key . 'ID' => $item];
             });
             $this->remove(array_keys($belongs_toID));
         }
 
-        if ($has_many)
-        {
+        if ($has_many) {
             $this->remove(array_keys($has_many));
         }
 
-        if ($many_many)
-        {
+        if ($many_many) {
             $this->remove(array_keys($many_many));
         }
 
-        if ($belongs_many_many)
-        {
+        if ($belongs_many_many) {
             $this->remove(array_keys($belongs_many_many));
         }
 
         // by some reason, 'FocusPoint' db type not being removed through remove()
         // only works when `FocusPoint` field name renamed to sentence case `Focuspoint`
-        foreach($db as $k => $f)
-        {
-            if (strtolower($f) == 'focuspoint')
-            {
+        foreach ($db as $k => $f) {
+            if (strtolower($f) == 'focuspoint') {
                 $this->remove(ucfirst(strtolower($k)));
             }
         }
@@ -232,11 +242,15 @@ class Harvest
     // TODO
     public function removeAllInTab($tab)
     {
-        $fltFields = $this->fields->findTab($tab)->getChildren()->flattenFields();
+        $fltFields = $this->fields
+            ->findTab($tab)
+            ->getChildren()
+            ->flattenFields();
 
         // Escpe some sensitive fields for BaseElement
-        if (is_subclass_of($this->getParent()->getOwner(), BaseElement::class))
-        {
+        if (
+            is_subclass_of($this->getParent()->getOwner(), BaseElement::class)
+        ) {
             $array = array_flip(array_keys($fltFields->map()->toArray()));
             unset($array['Version']);
             unset($array['AvailableGlobally']);
@@ -288,20 +302,25 @@ class Harvest
 
     private function lookForSource(&$name, &$title, &$source)
     {
-        if (empty($source))
-        {
+        if (empty($source)) {
             $relation = $this->parent->getRelationType($name);
 
-            if ($relation && ($relation == 'has_one' || $relation == 'belongs_to'))
-            {
+            if (
+                $relation &&
+                ($relation == 'has_one' || $relation == 'belongs_to')
+            ) {
                 $object = $this->parent->$name();
                 $class = get_class($object);
                 $source = $class::get()->map();
-                if (!$title) $title = $name;
+                if (!$title) {
+                    $title = $name;
+                }
                 $name .= 'ID';
-            }
-            else if ($relation == 'many_many' || $relation == 'has_many' || $relation == 'belongs_many_many')
-            {
+            } elseif (
+                $relation == 'many_many' ||
+                $relation == 'has_many' ||
+                $relation == 'belongs_many_many'
+            ) {
                 $object = $this->parent->$name();
                 $class = $object->dataClass;
                 $source = $class::get()->map();
@@ -311,19 +330,24 @@ class Harvest
 
     private function lookForSourceObject(&$name, &$title, &$sourceObject)
     {
-        if (!$sourceObject)
-        {
+        if (!$sourceObject) {
             $relation = $this->parent->getRelationType($name);
 
-            if ($relation && ($relation == 'has_one' || $relation == 'belongs_to'))
-            {
+            if (
+                $relation &&
+                ($relation == 'has_one' || $relation == 'belongs_to')
+            ) {
                 $object = $this->parent->$name();
                 $sourceObject = get_class($object);
-                if (!$title) $title = $name;
+                if (!$title) {
+                    $title = $name;
+                }
                 $name .= 'ID';
-            }
-            else if ($relation == 'many_many' || $relation == 'has_many' || $relation == 'belongs_many_many')
-            {
+            } elseif (
+                $relation == 'many_many' ||
+                $relation == 'has_many' ||
+                $relation == 'belongs_many_many'
+            ) {
                 $object = $this->parent->$name();
                 $sourceObject = $object->dataClass;
             }
@@ -378,8 +402,13 @@ class Harvest
      * DB Type: *
      * Available methods:
      */
-    public function string($name, $title = null, $value = '', $maxLength = null, $form = null)
-    {
+    public function string(
+        $name,
+        $title = null,
+        $value = '',
+        $maxLength = null,
+        $form = null,
+    ) {
         return TextField::create($name, $title, $value, $maxLength, $form);
     }
 
@@ -408,17 +437,35 @@ class Harvest
      * DB Type: *
      * Available methods:
      */
-    public function passwordConfirmed($name, $title = null, $value = '', $form = null, $showOnClick = false, $titleConfirmField = null)
-    {
-        return ConfirmedPasswordField::create($name, $title, $value, $form, $showOnClick, $titleConfirmField);
+    public function passwordConfirmed(
+        $name,
+        $title = null,
+        $value = '',
+        $form = null,
+        $showOnClick = false,
+        $titleConfirmField = null,
+    ) {
+        return ConfirmedPasswordField::create(
+            $name,
+            $title,
+            $value,
+            $form,
+            $showOnClick,
+            $titleConfirmField,
+        );
     }
 
     /**
      * DB Type: Currency
      * Available methods:
      */
-    public function currency($name, $title = null, $value = '', $maxLength = null, $form = null)
-    {
+    public function currency(
+        $name,
+        $title = null,
+        $value = '',
+        $maxLength = null,
+        $form = null,
+    ) {
         return CurrencyField::create($name, $title, $value, $maxLength, $form);
     }
 
@@ -426,8 +473,13 @@ class Harvest
      * DB Type: Date
      * Available methods:
      */
-    public function date($name, $title = null, $value = '', $maxLength = null, $form = null)
-    {
+    public function date(
+        $name,
+        $title = null,
+        $value = '',
+        $maxLength = null,
+        $form = null,
+    ) {
         return DateField::create($name, $title, $value, $maxLength, $form);
     }
 
@@ -435,8 +487,13 @@ class Harvest
      * DB Type: Datetime
      * Available methods:
      */
-    public function datetime($name, $title = null, $value = '', $maxLength = null, $form = null)
-    {
+    public function datetime(
+        $name,
+        $title = null,
+        $value = '',
+        $maxLength = null,
+        $form = null,
+    ) {
         return DatetimeField::create($name, $title, $value, $maxLength, $form);
     }
 
@@ -444,8 +501,13 @@ class Harvest
      * DB Type: *
      * Available methods:
      */
-    public function email($name, $title = null, $value = '', $maxLength = null, $form = null)
-    {
+    public function email(
+        $name,
+        $title = null,
+        $value = '',
+        $maxLength = null,
+        $form = null,
+    ) {
         return EmailField::create($name, $title, $value, $maxLength, $form);
     }
 
@@ -461,8 +523,12 @@ class Harvest
      * Code example:
         $source = FooBar::get()->map()
      */
-    public function groupedDropdown($name, $title = null, $source = [], $value = null)
-    {
+    public function groupedDropdown(
+        $name,
+        $title = null,
+        $source = [],
+        $value = null,
+    ) {
         $this->lookForSource($name, $title, $source);
 
         return GroupedDropdownField::create($name, $title, $source, $value);
@@ -490,8 +556,13 @@ class Harvest
      * DB Type: Decimal | Float | Int
      * Available methods:
      */
-    public function numeric($name, $title = null, $value = '', $maxLength = null, $form = null)
-    {
+    public function numeric(
+        $name,
+        $title = null,
+        $value = '',
+        $maxLength = null,
+        $form = null,
+    ) {
         return NumericField::create($name, $title, $value, $maxLength, $form);
     }
 
@@ -543,8 +614,13 @@ class Harvest
      * DB Type: Time
      * Available methods:
      */
-    public function time($name, $title = null, $value = '', $maxLength = null, $form = null)
-    {
+    public function time(
+        $name,
+        $title = null,
+        $value = '',
+        $maxLength = null,
+        $form = null,
+    ) {
         return TimeField::create($name, $title, $value, $maxLength, $form);
     }
 
@@ -673,13 +749,22 @@ class Harvest
      * Code example:
         $source = FooBar::get()->map()
      */
-    public function checkboxSet($name, $title = null, $source = [], $value = null)
-    {
+    public function checkboxSet(
+        $name,
+        $title = null,
+        $source = [],
+        $value = null,
+    ) {
         $relation = $this->parent->getRelationType($name);
 
-        if (in_array($relation, ['has_one', 'belongs_to']))
-        {
-            return $this->returnError($name, $name . ': do not use <b>checkboxSet</b> on <b>' . $relation . '</b>');
+        if (in_array($relation, ['has_one', 'belongs_to'])) {
+            return $this->returnError(
+                $name,
+                $name .
+                    ': do not use <b>checkboxSet</b> on <b>' .
+                    $relation .
+                    '</b>',
+            );
         }
 
         $this->lookForSource($name, $title, $source);
@@ -695,16 +780,32 @@ class Harvest
      * Code example:
         $harvest->dropdownTree('Page'),
      */
-    public function dropdownTree($name, $title = null, $sourceObject = null, $keyField = 'ID', $labelField = 'TreeTitle', $showSearch = true)
-    {
+    public function dropdownTree(
+        $name,
+        $title = null,
+        $sourceObject = null,
+        $keyField = 'ID',
+        $labelField = 'TreeTitle',
+        $showSearch = true,
+    ) {
         $this->lookForSourceObject($name, $title, $sourceObject);
 
-        if (!is_subclass_of(new $sourceObject, SiteTree::class))
-        {
-            return $this->returnError($name, $name . ': use <b>dropdownTree</b> only for a relationship that inherited <b>SiteTree</b> class');
+        if (!is_subclass_of(new $sourceObject(), SiteTree::class)) {
+            return $this->returnError(
+                $name,
+                $name .
+                    ': use <b>dropdownTree</b> only for a relationship that inherited <b>SiteTree</b> class',
+            );
         }
 
-        return TreeDropdownField::create($name, $title, $sourceObject, $keyField, $labelField, $showSearch);
+        return TreeDropdownField::create(
+            $name,
+            $title,
+            $sourceObject,
+            $keyField,
+            $labelField,
+            $showSearch,
+        );
     }
 
     /**
@@ -714,11 +815,21 @@ class Harvest
      * Allowed relations: has_many | many_many
      * Available methods:
      */
-    public function treeMultiSelect($name, $title = null, $sourceObject = Group::class, $keyField = "ID", $labelField = "Title")
-    {
-        return TreeMultiselectField::create($name, $title, $sourceObject, $keyField, $labelField);
+    public function treeMultiSelect(
+        $name,
+        $title = null,
+        $sourceObject = Group::class,
+        $keyField = 'ID',
+        $labelField = 'Title',
+    ) {
+        return TreeMultiselectField::create(
+            $name,
+            $title,
+            $sourceObject,
+            $keyField,
+            $labelField,
+        );
     }
-
 
     /**
      * DB Type: *
@@ -743,8 +854,12 @@ class Harvest
                 'delete',
             ])->build(),
      */
-    public function grid($name, $title = null, SS_List $dataList = null, GridFieldConfig $config = null)
-    {
+    public function grid(
+        $name,
+        $title = null,
+        SS_List $dataList = null,
+        GridFieldConfig $config = null,
+    ) {
         $grid = new Grid($this->fields, $this->parent);
         $grid->init($name, $title, $dataList, $config);
 
@@ -759,13 +874,23 @@ class Harvest
      * Code example:
         $harvest->listbox('List'),
      */
-    public function listbox($name, $title = null, $source = [], $value = null, $size = null)
-    {
+    public function listbox(
+        $name,
+        $title = null,
+        $source = [],
+        $value = null,
+        $size = null,
+    ) {
         $relation = $this->parent->getRelationType($name);
 
-        if (in_array($relation, ['has_one', 'belongs_to']))
-        {
-            return $this->returnError($name, $name . ': do not use <b>listbox</b> on <b>' . $relation . '</b>');
+        if (in_array($relation, ['has_one', 'belongs_to'])) {
+            return $this->returnError(
+                $name,
+                $name .
+                    ': do not use <b>listbox</b> on <b>' .
+                    $relation .
+                    '</b>',
+            );
         }
 
         $this->lookForSource($name, $title, $source);
@@ -855,10 +980,14 @@ class Harvest
      * DB Type: Decimal
      * Available methods:
      */
-    public function decimal($name, $title = null, $wholeSize = 9, $decimalSize = 2, $defaultValue = 0)
-    {
-        if (!$this->isDBType($name, DBDecimal::class))
-        {
+    public function decimal(
+        $name,
+        $title = null,
+        $wholeSize = 9,
+        $decimalSize = 2,
+        $defaultValue = 0,
+    ) {
+        if (!$this->isDBType($name, DBDecimal::class)) {
             return $this->returnTypeError($name, 'decimal');
         }
 
@@ -875,8 +1004,7 @@ class Harvest
      */
     public function double($name, $title = null, $defaultVal = 0)
     {
-        if (!$this->isDBType($name, DBDouble::class))
-        {
+        if (!$this->isDBType($name, DBDouble::class)) {
             return $this->returnTypeError($name, 'double');
         }
 
@@ -893,8 +1021,7 @@ class Harvest
      */
     public function float($name, $title = null, $defaultVal = 0)
     {
-        if (!$this->isDBType($name, DBFloat::class))
-        {
+        if (!$this->isDBType($name, DBFloat::class)) {
             return $this->returnTypeError($name, 'float');
         }
 
@@ -911,12 +1038,11 @@ class Harvest
      */
     public function year($name, $title = null, $options = [])
     {
-        if (!$this->isDBType($name, DBYear::class))
-        {
+        if (!$this->isDBType($name, DBYear::class)) {
             return $this->returnTypeError($name, 'year');
         }
 
-        $field = new DBYear($name, $options = []);
+        $field = new DBYear($name, ($options = []));
         return $field->scaffoldFormField($title);
     }
 
@@ -926,8 +1052,7 @@ class Harvest
      */
     public function percentage($name, $title = null, $precision = 4)
     {
-        if (!$this->isDBType($name, DBPercentage::class))
-        {
+        if (!$this->isDBType($name, DBPercentage::class)) {
             return $this->returnTypeError($name, 'percentage');
         }
 
@@ -941,8 +1066,7 @@ class Harvest
      */
     public function int($name, $title = null, $defaultVal = 0)
     {
-        if (!$this->isDBType($name, DBInt::class))
-        {
+        if (!$this->isDBType($name, DBInt::class)) {
             return $this->returnTypeError($name, 'int');
         }
 
@@ -956,8 +1080,7 @@ class Harvest
      */
     public function bigInt($name, $title = null, $defaultVal = 0)
     {
-        if (!$this->isDBType($name, DBBigInt::class))
-        {
+        if (!$this->isDBType($name, DBBigInt::class)) {
             return $this->returnTypeError($name, 'int');
         }
 
@@ -971,8 +1094,7 @@ class Harvest
      */
     public function locale($name, $title = null, $size = 16)
     {
-        if (!$this->isDBType($name, DBLocale::class))
-        {
+        if (!$this->isDBType($name, DBLocale::class)) {
             return $this->returnTypeError($name, 'int');
         }
 
@@ -986,8 +1108,7 @@ class Harvest
      */
     public function enum($name)
     {
-        if (!$this->isDBType($name, DBEnum::class))
-        {
+        if (!$this->isDBType($name, DBEnum::class)) {
             return $this->returnTypeError($name, 'enum');
         }
 
@@ -1026,9 +1147,21 @@ class Harvest
      *
         $harvest->objectLink('Project'),
      */
-    public function objectLink($relationName, $fieldName = null, $title = null, GridFieldConfig $customConfig = null, $useAutocompleter = true)
-    {
-        return HasOneButtonField::create($this->parent, $relationName, $fieldName, $title, $customConfig, $useAutocompleter);
+    public function objectLink(
+        $relationName,
+        $fieldName = null,
+        $title = null,
+        GridFieldConfig $customConfig = null,
+        $useAutocompleter = true,
+    ) {
+        return HasOneButtonField::create(
+            $this->parent,
+            $relationName,
+            $fieldName,
+            $title,
+            $customConfig,
+            $useAutocompleter,
+        );
     }
 
     /**
@@ -1036,9 +1169,19 @@ class Harvest
      * Allowed relations: has_one | belongs_to
      * Available methods:
      */
-    public function object($relationName, $title = null, $linkConfig = [], $useAutocompleter = false)
-    {
-        return HasOneLinkField::create($this->parent, $relationName, $title, $linkConfig, $useAutocompleter);
+    public function object(
+        $relationName,
+        $title = null,
+        $linkConfig = [],
+        $useAutocompleter = false,
+    ) {
+        return HasOneLinkField::create(
+            $this->parent,
+            $relationName,
+            $title,
+            $linkConfig,
+            $useAutocompleter,
+        );
     }
 
     /**
@@ -1050,16 +1193,31 @@ class Harvest
         $harvest->multiSelect('Services'),
         $harvest->multiSelect('Services', 'Services', 'SortExtra'),
      */
-    public function multiSelect($name, $title = null, $sort = false, $source = null, $titleField = 'Title')
-    {
+    public function multiSelect(
+        $name,
+        $title = null,
+        $sort = false,
+        $source = null,
+        $titleField = 'Title',
+    ) {
         $relation = $this->parent->getRelationType($name);
 
-        if (!in_array($relation, ['many_many', 'belongs_many_many']))
-        {
-            return $this->returnError($name, $name . ': <b>multiSelect</b> is only for <b>many-many</b> relationship');
+        if (!in_array($relation, ['many_many', 'belongs_many_many'])) {
+            return $this->returnError(
+                $name,
+                $name .
+                    ': <b>multiSelect</b> is only for <b>many-many</b> relationship',
+            );
         }
 
-        return MultiSelectField::create($name, $title, $this->parent, $sort, $source, $titleField);
+        return MultiSelectField::create(
+            $name,
+            $title,
+            $this->parent,
+            $sort,
+            $source,
+            $titleField,
+        );
     }
 
     /**
@@ -1072,7 +1230,12 @@ class Harvest
      */
     public function media($name, $title = null)
     {
-        return EditableUploadField::create($name, $title, $this->fields, $this->parent)->getFields();
+        return EditableUploadField::create(
+            $name,
+            $title,
+            $this->fields,
+            $this->parent,
+        )->getFields();
     }
 
     /**
@@ -1085,7 +1248,12 @@ class Harvest
      */
     public function mediaSortable($name, $title = null)
     {
-        return EditableSortableUploadField::create($name, $title, $this->fields, $this->parent)->getFields();
+        return EditableSortableUploadField::create(
+            $name,
+            $title,
+            $this->fields,
+            $this->parent,
+        )->getFields();
     }
 
     /**
@@ -1128,8 +1296,12 @@ class Harvest
      * Code example:
         $harvest->colorGroup('Color', 'Color', ['Primary' => ['yellow' => '#fee12f', 'pink' => '#eb83ad'], 'Secondary' => ['green' => '#70cd77']]),
      */
-    public function colorGroup($name, $title = null, $source = [], $value = null)
-    {
+    public function colorGroup(
+        $name,
+        $title = null,
+        $source = [],
+        $value = null,
+    ) {
         return GroupedColorPaletteField::create($name, $title, $source);
     }
 
@@ -1158,9 +1330,23 @@ class Harvest
      * 3):
       $harvest->json('Parameters'),
      */
-    public function json($name, $title = null, $options = [], $value = '{}', $form = null, $schema = '{}')
-    {
-        return JSONEditorField::create($name, $title, $this->parent, $options, $value, $form, $schema);
+    public function json(
+        $name,
+        $title = null,
+        $options = [],
+        $value = '{}',
+        $form = null,
+        $schema = '{}',
+    ) {
+        return JSONEditorField::create(
+            $name,
+            $title,
+            $this->parent,
+            $options,
+            $value,
+            $form,
+            $schema,
+        );
     }
 
     /**
@@ -1264,8 +1450,13 @@ class Harvest
      * DB Type: *
      * Available methods: setMode() setTheme()
      */
-    public function code($name, $title = null, $value = null, $mode = 'ace/mode/html', $theme = 'ace/theme/github')
-    {
+    public function code(
+        $name,
+        $title = null,
+        $value = null,
+        $mode = 'ace/mode/html',
+        $theme = 'ace/theme/github',
+    ) {
         $field = CodeEditorField::create($name, $title, $value);
         $field->setMode($mode);
         $field->setTheme($theme);
@@ -1278,21 +1469,29 @@ class Harvest
      * Allowed relations: has_many | many_many | belongs_many_many
      * Available methods:
      */
-    public function tag($name, $title = null, $source = [], $value = null, $titleField = 'Title')
-    {
+    public function tag(
+        $name,
+        $title = null,
+        $source = [],
+        $value = null,
+        $titleField = 'Title',
+    ) {
         $relation = $this->parent->getRelationType($name);
 
-        if (!in_array($relation, ['has_many', 'many_many', 'belongs_many_many']))
-        {
-            return $this->returnError($name, $name . ': <b>multiSelect</b> is only for <b>many-many</b> relationship');
+        if (
+            !in_array($relation, ['has_many', 'many_many', 'belongs_many_many'])
+        ) {
+            return $this->returnError(
+                $name,
+                $name .
+                    ': <b>multiSelect</b> is only for <b>many-many</b> relationship',
+            );
         }
 
-        if (empty($source))
-        {
+        if (empty($source)) {
             $this->lookForSourceObject($name, $title, $source);
 
-            if (is_string($source))
-            {
+            if (is_string($source)) {
                 $source = $source::get();
                 $value = $this->parent->$name();
             }
@@ -1328,25 +1527,29 @@ class Harvest
      * Code example:
         $harvest->points('ImagePoints'),
      */
-    public function points($name, $title = null, $source = [], $gridconfig = null)
-    {
-        if (!$source)
-        {
+    public function points(
+        $name,
+        $title = null,
+        $source = [],
+        $gridconfig = null,
+    ) {
+        if (!$source) {
             $relation = $this->parent->getRelationType($name);
 
-            if (in_array($relation, ['has_many', 'many_many', 'belongs_many_many']))
-            {
+            if (
+                in_array($relation, [
+                    'has_many',
+                    'many_many',
+                    'belongs_many_many',
+                ])
+            ) {
                 $source = $this->parent->$name();
             }
         }
 
         $grid = $this->grid($name, $title, $source, $gridconfig)
-            ->components([
-                'add',
-                'detail-form',
-                'delete',
-                'edit',
-            ])->build();
+            ->components(['add', 'detail-form', 'delete', 'edit'])
+            ->build();
 
         return $grid;
     }
@@ -1372,11 +1575,22 @@ class Harvest
      * Code example:
         $harvest->autocomplete('Page', 'Page', '', Page::class, 'Title'),
      */
-    public function autocomplete($name, $title = null, $value = '', $sourceClass = null, $sourceFields = null)
-    {
+    public function autocomplete(
+        $name,
+        $title = null,
+        $value = '',
+        $sourceClass = null,
+        $sourceFields = null,
+    ) {
         // $this->lookForSourceObject($name, $title, $sourceClass);
 
-        return AutoCompleteField::create($name, $title, $value, $sourceClass, $sourceFields);
+        return AutoCompleteField::create(
+            $name,
+            $title,
+            $value,
+            $sourceClass,
+            $sourceFields,
+        );
     }
 
     /**
@@ -1414,27 +1628,45 @@ class Harvest
         $harvest->imageCoords('Image', 'Focus Point', true),
         $harvest->imageCoords('Image', 'Focus Point'),
      */
-    public function imageCoords($name, $title, $onlyCanvas = false, $cssGrid = false, $image = null, $XFieldName = null, $YFieldName = null, $xySumFieldName = null, $width = null, $height = null)
-    {
+    public function imageCoords(
+        $name,
+        $title,
+        $onlyCanvas = false,
+        $cssGrid = false,
+        $image = null,
+        $XFieldName = null,
+        $YFieldName = null,
+        $xySumFieldName = null,
+        $width = null,
+        $height = null,
+    ) {
         // TODO: ImageCoordsField::create($this, 'Image'),
 
-        if (!$image)
-        {
+        if (!$image) {
             $relation = $this->parent->getRelationType($name);
 
-            if (in_array($relation, ['has_one']))
-            {
+            if (in_array($relation, ['has_one'])) {
                 $image = $this->parent->$name();
             }
 
-            $XFieldName = $name .'-_1_-FocusPointX';
-            $YFieldName = $name .'-_1_-FocusPointY';
+            $XFieldName = $name . '-_1_-FocusPointX';
+            $YFieldName = $name . '-_1_-FocusPointY';
             $xySumFieldName = 'filename';
             $width = $image->getWidth();
             $height = $image->getHeight();
         }
 
-        return ImageCoordsField::create($title, $XFieldName, $YFieldName, $xySumFieldName, $image, $width, $height, $cssGrid, $onlyCanvas);
+        return ImageCoordsField::create(
+            $title,
+            $XFieldName,
+            $YFieldName,
+            $xySumFieldName,
+            $image,
+            $width,
+            $height,
+            $cssGrid,
+            $onlyCanvas,
+        );
     }
 
     // TODO
@@ -1470,9 +1702,20 @@ class Harvest
      * DB Type: *
      * Available methods:
      */
-    public function siteTreeURLSegment($name, $title = null, $value = '', $maxLength = null, $form = null)
-    {
-        return SiteTreeURLSegmentField::create($name, $title, $value, $maxLength, $form);
+    public function siteTreeURLSegment(
+        $name,
+        $title = null,
+        $value = '',
+        $maxLength = null,
+        $form = null,
+    ) {
+        return SiteTreeURLSegmentField::create(
+            $name,
+            $title,
+            $value,
+            $maxLength,
+            $form,
+        );
     }
 
     /**
@@ -1509,8 +1752,7 @@ class Harvest
     {
         // https://github.com/goldfinch/silverstripe-encrypt/
 
-        if (EncryptHelper::isEncryptedField(get_class($this->parent), $name))
-        {
+        if (EncryptHelper::isEncryptedField(get_class($this->parent), $name)) {
             $this->parent->$name = $this->parent->dbObject($name)->getValue();
         }
 
@@ -1521,9 +1763,20 @@ class Harvest
      * DB Type: *
      * Available methods:
      */
-    public function country($name, $title = null, $source = [], $value = '', $form = null)
-    {
-        return CountryDropdownField::create($name, $title, $source, $value, $form);
+    public function country(
+        $name,
+        $title = null,
+        $source = [],
+        $value = '',
+        $form = null,
+    ) {
+        return CountryDropdownField::create(
+            $name,
+            $title,
+            $source,
+            $value,
+            $form,
+        );
     }
 
     /**
@@ -1557,8 +1810,7 @@ class Harvest
      */
     public function phone($name, $title = null, $options = [])
     {
-        if (!$this->isDBType($name, DBPhone::class))
-        {
+        if (!$this->isDBType($name, DBPhone::class)) {
             return $this->returnTypeError($name, 'phone');
         }
 
@@ -1579,17 +1831,24 @@ class Harvest
      */
     public function mediaSelect($name, $relationList, $title = null)
     {
-        if (is_string($relationList))
-        {
+        if (is_string($relationList)) {
             $relation = $this->parent->getRelationType($relationList);
 
-            if (in_array($relation, ['has_many', 'many_many', 'belongs_many_many']))
-            {
+            if (
+                in_array($relation, [
+                    'has_many',
+                    'many_many',
+                    'belongs_many_many',
+                ])
+            ) {
                 $relationList = $this->parent->$relationList();
             }
         }
 
-        return ImageSelectionField::create($name . 'ID', $title ?? $name)->setImageList($relationList);
+        return ImageSelectionField::create(
+            $name . 'ID',
+            $title ?? $name,
+        )->setImageList($relationList);
     }
 
     private function isDBType($name, $type)
@@ -1599,11 +1858,21 @@ class Harvest
 
     private function returnTypeError($name, $type)
     {
-        return $this->literal($name . '_error', '<div class="alert alert-warning"><b>' . $name . '</b> is not type of ' . $type . '</div>');
+        return $this->literal(
+            $name . '_error',
+            '<div class="alert alert-warning"><b>' .
+                $name .
+                '</b> is not type of ' .
+                $type .
+                '</div>',
+        );
     }
 
     private function returnError($name, $message)
     {
-        return $this->literal($name . '_error', '<div class="alert alert-warning">' . $message . '</div>');
+        return $this->literal(
+            $name . '_error',
+            '<div class="alert alert-warning">' . $message . '</div>',
+        );
     }
 }
