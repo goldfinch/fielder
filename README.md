@@ -173,6 +173,7 @@ $harvest->removeAll();
 > remove all fields within the class (ignores fields that were added through inherited or extended classes)
 ```php
 $harvest->removeAllCurrent();
+```
 
 > add custom error
 ```php

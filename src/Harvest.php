@@ -229,6 +229,7 @@ class Harvest
         }
     }
 
+    // TODO
     public function removeAllInTab($tab)
     {
         $fltFields = $this->fields->findTab($tab)->getChildren()->flattenFields();
