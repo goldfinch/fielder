@@ -1,3 +1,7 @@
+TODO:
+
+- fields order?
+
 has_one | belongs_to
 
 ```
