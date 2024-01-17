@@ -22,6 +22,7 @@ use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use SilverStripe\Forms\GridField\GridFieldExportButton;
 use SilverStripe\Forms\GridField\GridFieldFilterHeader;
 use SilverStripe\Forms\GridField\GridFieldImportButton;
+use Axllent\MetaEditor\Forms\GridField\GridFieldLevelup;
 use SilverStripe\Forms\GridField\GridFieldToolbarHeader;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 use SilverStripe\Forms\GridField\GridFieldSortableHeader;
@@ -34,7 +35,6 @@ use Symbiote\GridFieldExtensions\GridFieldConfigurablePaginator;
 use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use Goldfinch\ImageEditor\Forms\GridField\GridFieldManyManyFocusConfig;
-use Axllent\MetaEditor\Forms\GridField\GridFieldLevelup;
 
 class Grid
 {

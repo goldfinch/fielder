@@ -2,14 +2,12 @@
 
 namespace Goldfinch\Harvest;
 
-use ReflectionClass;
 use Goldfinch\Harvest\Grid;
 use Illuminate\Support\Arr;
 use SilverStripe\Forms\Tab;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\Assets\Image;
 use SilverStripe\Forms\TabSet;
-use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Group;
 use SilverStripe\Forms\DateField;
 use SilverStripe\Forms\FieldList;
@@ -67,7 +65,6 @@ use Goldfinch\GoogleFields\Forms\MapField;
 use Goldfinch\GoogleFields\Forms\PlaceField;
 use DNADesign\Elemental\Models\BaseElement;
 use JonoM\FocusPoint\Forms\FocusPointField;
-use PhpTek\JSONText\ORM\FieldType\JSONText;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\SelectionGroup_Item;
 use SilverStripe\TagField\ReadonlyTagField;
@@ -77,7 +74,6 @@ use SilverStripe\Forms\GroupedDropdownField;
 use SilverStripe\Forms\ToggleCompositeField;
 use SilverStripe\Forms\TreeMultiselectField;
 use SilverStripe\ORM\FieldType\DBPercentage;
-use SilverStripe\Security\Confirmation\Item;
 use SilverShop\HasOneField\HasOneButtonField;
 use gorriecoe\LinkField\Forms\HasOneLinkField;
 use SilverStripe\AssetAdmin\Forms\UploadField;
@@ -108,9 +104,13 @@ use Goldfinch\ImageEditor\Forms\EditableSortableUploadField;
 class Harvest
 {
     private $fields = null;
+
     private $initialFields = null;
+
     private $allFieldsRemoved = false;
+
     private $requireFields = [];
+
     private $error = null;
 
     private $parent = null;
@@ -138,12 +138,11 @@ class Harvest
     {
         foreach ($fieldsList as $tab => $list) {
             if (is_array($list)) {
-                foreach ($list as $li)
-                {
+                foreach ($list as $li) {
                     $this->fields->addFieldToTab($tab, $li);
                 }
             } else {
-              $this->fields->addFieldToTab($list);
+                $this->fields->addFieldToTab($list);
             }
         }
 
