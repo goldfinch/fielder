@@ -141,6 +141,13 @@ class Harvest
         return $this->fields;
     }
 
+    public function freshFields($fieldsList)
+    {
+        $this->removeAllCurrent();
+
+        return $this->fields($fieldsList);
+    }
+
     public function dataField($name)
     {
         if ($this->allFieldsRemoved) {

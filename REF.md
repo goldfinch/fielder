@@ -1,6 +1,6 @@
 TODO:
 
-- fields order?
+- fields reorder?
 
 has_one | belongs_to
 

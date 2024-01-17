@@ -17,6 +17,7 @@ class HarvestExtension extends DataExtension
                 $this->owner,
             );
             $this->owner->harvest($harvest);
+            $this->owner->extend('updateHarvest', $harvest);
 
             return $harvest;
         }
@@ -30,6 +31,7 @@ class HarvestExtension extends DataExtension
                 $this->owner,
             );
             $this->owner->harvestSettings($harvest);
+            $this->owner->extend('updateHarvestSettings', $harvest);
 
             return $harvest;
         }
@@ -39,16 +41,12 @@ class HarvestExtension extends DataExtension
     {
         $harvest = $this->owner->getCurrentHarvest($fields);
 
-        $this->owner->extend('updateHarvest', $harvest);
-
         return $harvest;
     }
 
     public function harvestSettingsFields($fields)
     {
         $harvest = $this->owner->getCurrentHarvestSettings($fields);
-
-        $this->owner->extend('updateHarvestSettings', $harvest);
 
         return $harvest;
     }

@@ -153,6 +153,25 @@ $harvest->fields([
 ])
 ```
 
+> declare fields removing previously declared fields
+```php
+$harvest->freshFields([
+  'Root.Main' => [
+    $harvest->string('Title'),
+  ],
+])
+```
+
+> get data field, same as `dataFieldByName`
+```php
+$harvest->dataField('Title');
+```
+
+> get field, same as `scaffoldFormField`
+```php
+$harvest->field('Title');
+```
+
 > required field
 
 ```php
