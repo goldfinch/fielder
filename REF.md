@@ -1,6 +1,7 @@
 TODO:
 
 - fields reorder?
+- Image_ImageEditor
 
 has_one | belongs_to
 
