@@ -315,6 +315,13 @@ class Harvest
         return $this->parent;
     }
 
+    public function makeReadonly()
+    {
+        $this->fields->makeReadonly();
+
+        return $this;
+    }
+
     private function lookForSource(&$name, &$title, &$source)
     {
         if (empty($source)) {
