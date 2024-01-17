@@ -2,6 +2,7 @@ TODO:
 
 - fields reorder?
 - Image_ImageEditor
+- merge required fields (with extension)
 
 has_one | belongs_to
 
