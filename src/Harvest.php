@@ -124,7 +124,9 @@ class Harvest
 
     public function field($name, $title = null)
     {
-        return $this->parent->dbObject($name)->scaffoldFormField($title);
+        $obj = $this->parent->dbObject($name);
+
+        return $obj ? $obj->scaffoldFormField($title) : null;
     }
 
     public function remove($fields)
@@ -135,7 +137,14 @@ class Harvest
     public function fields($fieldsList)
     {
         foreach ($fieldsList as $tab => $list) {
-            $this->fields->addFieldsToTab($tab, $list);
+            if (is_array($list)) {
+                foreach ($list as $li)
+                {
+                    $this->fields->addFieldToTab($tab, $li);
+                }
+            } else {
+              $this->fields->addFieldToTab($list);
+            }
         }
 
         return $this->fields;
