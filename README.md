@@ -124,11 +124,11 @@ MyAwesomePage extends SiteTree
 ```php
 use Goldfinch\Harvest\Harvest;
 
-public function updateHarvest(Harvest $harvest)
+public function updateHarvest(Harvest $harvest): void
 {
     // ..
 }
-public function updateHarvestSettings(Harvest $harvest)
+public function updateHarvestSettings(Harvest $harvest): void
 {
     // ..
 }
