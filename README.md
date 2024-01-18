@@ -26,7 +26,7 @@ MyAwesomeModel extends DataObject
 {
     use HarvestTrait;
 
-    public function harvest(Harvest $harvest)
+    public function harvest(Harvest $harvest): void
     {
         $harvest->remove('Content');
 
@@ -73,7 +73,7 @@ use SilverStripe\CMS\Model\SiteTree;
 
 MyAwesomePage extends SiteTree
 {
-    public function harvest(Harvest $harvest)
+    public function harvest(Harvest $harvest): void
     {
         $harvest->remove('Content');
 
