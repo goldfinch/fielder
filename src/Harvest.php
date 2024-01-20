@@ -1421,7 +1421,7 @@ class Harvest
      */
     public function inlineLink($name, $title = null, $value = null)
     {
-        // $this->fields->removeByName($name . 'ID');
+        $this->fields->removeByName($name . 'ID');
 
         return AnyField::create($name, $title, $value);
     }
