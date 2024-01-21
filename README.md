@@ -475,12 +475,12 @@ $harvest->composite([
 Class: `SilverStripe\Forms\FieldGroup`
 
 ```php
-$harvest->group($titleOrField = null, $otherFields = null)
+$harvest->group($titleOrField = null, ...$otherFields)
 // ..
-$harvest->group('Group Title', [
+$harvest->group(
     $harvest->string('Title'),
     $harvest->html('Text'),
-])
+)->setTitle('Group Title')
 ```
 
 #### list
@@ -1253,7 +1253,7 @@ composer require unclecheese/display-logic
 Class: `UncleCheese\DisplayLogic\Forms\Wrapper`
 
 ```php
-$harvest->wrapper($children = null)
+$harvest->wrapper($children)
 ```
 
 #### autocomplete

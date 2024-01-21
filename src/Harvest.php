@@ -388,6 +388,8 @@ class Harvest
      */
     public function checkbox($name, $title = null, $value = null)
     {
+        $this->existenceCheck($name);
+
         return CheckboxField::create($name, $title, $value);
     }
 
@@ -399,6 +401,8 @@ class Harvest
     {
         $this->lookForSource($name, $title, $source);
 
+        $this->existenceCheck($name);
+
         return DropdownField::create($name, $title, $source, $value);
     }
 
@@ -408,6 +412,8 @@ class Harvest
      */
     public function readonly($name, $title = null, $value = null)
     {
+        $this->existenceCheck($name);
+
         return ReadonlyField::create($name, $title, $value);
     }
 
@@ -417,6 +423,8 @@ class Harvest
      */
     public function text($name, $title = null, $value = null)
     {
+        $this->existenceCheck($name);
+
         return TextareaField::create($name, $title, $value);
     }
 
@@ -431,6 +439,8 @@ class Harvest
         $maxLength = null,
         $form = null,
     ) {
+        $this->existenceCheck($name);
+
         return TextField::create($name, $title, $value, $maxLength, $form);
     }
 
@@ -440,6 +450,8 @@ class Harvest
      */
     public function password($name, $title = null, $value = '')
     {
+        $this->existenceCheck($name);
+
         return PasswordField::create($name, $title, $value);
     }
 
@@ -467,6 +479,8 @@ class Harvest
         $showOnClick = false,
         $titleConfirmField = null,
     ) {
+        $this->existenceCheck($name);
+
         return ConfirmedPasswordField::create(
             $name,
             $title,
@@ -488,6 +502,8 @@ class Harvest
         $maxLength = null,
         $form = null,
     ) {
+        $this->existenceCheck($name);
+
         return CurrencyField::create($name, $title, $value, $maxLength, $form);
     }
 
@@ -502,6 +518,8 @@ class Harvest
         $maxLength = null,
         $form = null,
     ) {
+        $this->existenceCheck($name);
+
         return DateField::create($name, $title, $value, $maxLength, $form);
     }
 
@@ -516,6 +534,8 @@ class Harvest
         $maxLength = null,
         $form = null,
     ) {
+        $this->existenceCheck($name);
+
         return DatetimeField::create($name, $title, $value, $maxLength, $form);
     }
 
@@ -530,6 +550,8 @@ class Harvest
         $maxLength = null,
         $form = null,
     ) {
+        $this->existenceCheck($name);
+
         return EmailField::create($name, $title, $value, $maxLength, $form);
     }
 
@@ -553,6 +575,8 @@ class Harvest
     ) {
         $this->lookForSource($name, $title, $source);
 
+        $this->existenceCheck($name);
+
         return GroupedDropdownField::create($name, $title, $source, $value);
     }
 
@@ -562,6 +586,8 @@ class Harvest
      */
     public function html($name, $title = null, $value = '', $config = null)
     {
+        $this->existenceCheck($name);
+
         return HTMLEditorField::create($name, $title, $value, $config);
     }
 
@@ -571,6 +597,8 @@ class Harvest
      */
     public function money($name, $title = null, $value = '')
     {
+        $this->existenceCheck($name);
+
         return MoneyField::create($name, $title, $value);
     }
 
@@ -585,6 +613,8 @@ class Harvest
         $maxLength = null,
         $form = null,
     ) {
+        $this->existenceCheck($name);
+
         return NumericField::create($name, $title, $value, $maxLength, $form);
     }
 
@@ -600,6 +630,8 @@ class Harvest
     public function radio($name, $title = null, $source = [], $value = null)
     {
         $this->lookForSource($name, $title, $source);
+
+        $this->existenceCheck($name);
 
         return OptionsetField::create($name, $title, $source, $value);
     }
@@ -624,6 +656,8 @@ class Harvest
      */
     public function selectionGroup($name, $items, $value = null)
     {
+        $this->existenceCheck($name);
+
         return SelectionGroup::create($name, $items, $value);
     }
 
@@ -643,6 +677,8 @@ class Harvest
         $maxLength = null,
         $form = null,
     ) {
+        $this->existenceCheck($name);
+
         return TimeField::create($name, $title, $value, $maxLength, $form);
     }
 
@@ -668,12 +704,12 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->group('Group Title', [
+        $harvest->group(
             $harvest->string('Title'),
             $harvest->html('Text'),
-        ]),
+        )->setTitle('Group Title),
      */
-    public function group($titleOrField = null, $otherFields = null)
+    public function group($titleOrField = null, ...$otherFields)
     {
         return FieldGroup::create($titleOrField, $otherFields);
     }
@@ -704,6 +740,8 @@ class Harvest
      */
     public function tab($name, $titleOrField = null, $fields = null)
     {
+        $this->existenceCheck($name);
+
         return Tab::create($name, $titleOrField, $fields);
     }
 
@@ -719,6 +757,8 @@ class Harvest
      */
     public function tabSet($name, $titleOrTab = null, $tabs = null)
     {
+        $this->existenceCheck($name);
+
         return TabSet::create($name, $titleOrTab, $tabs);
     }
 
@@ -734,6 +774,8 @@ class Harvest
      */
     public function toggleComposite($name, $title, $children)
     {
+        $this->existenceCheck($name);
+
         return ToggleCompositeField::create($name, $title, $children);
     }
 
@@ -746,6 +788,8 @@ class Harvest
      */
     public function upload($name, $title = null, SS_List $items = null)
     {
+        $this->existenceCheck($name);
+
         return UploadField::create($name, $title, $items);
     }
 
@@ -756,6 +800,8 @@ class Harvest
      */
     public function file($name, $title = null, $value = null)
     {
+        $this->existenceCheck($name);
+
         return FileField::create($name, $title, $value);
     }
 
@@ -791,6 +837,8 @@ class Harvest
 
         $this->lookForSource($name, $title, $source);
 
+        $this->existenceCheck($name);
+
         return CheckboxSetField::create($name, $title, $source, $value);
     }
 
@@ -820,6 +868,8 @@ class Harvest
             );
         }
 
+        $this->existenceCheck($name);
+
         return TreeDropdownField::create(
             $name,
             $title,
@@ -844,6 +894,8 @@ class Harvest
         $keyField = 'ID',
         $labelField = 'Title',
     ) {
+        $this->existenceCheck($name);
+
         return TreeMultiselectField::create(
             $name,
             $title,
@@ -882,6 +934,8 @@ class Harvest
         SS_List $dataList = null,
         GridFieldConfig $config = null,
     ) {
+        $this->existenceCheck($name);
+
         $grid = new Grid($this->fields, $this->parent);
         $grid->init($name, $title, $dataList, $config);
 
@@ -917,6 +971,8 @@ class Harvest
 
         $this->lookForSource($name, $title, $source);
 
+        $this->existenceCheck($name);
+
         return ListboxField::create($name, $title, $source, $value, $size);
     }
 
@@ -933,6 +989,8 @@ class Harvest
      */
     public function header($name, $title = null, $headingLevel = 2)
     {
+        $this->existenceCheck($name);
+
         return HeaderField::create($name, $title, $headingLevel);
     }
 
@@ -942,6 +1000,8 @@ class Harvest
      */
     public function hidden($name, $title = null, $value = null)
     {
+        $this->existenceCheck($name);
+
         return HiddenField::create($name, $title, $value);
     }
 
@@ -951,6 +1011,8 @@ class Harvest
      */
     public function label($name, $title = null)
     {
+        $this->existenceCheck($name);
+
         return LabelField::create($name, $title);
     }
 
@@ -960,6 +1022,8 @@ class Harvest
      */
     public function literal($name, $content)
     {
+        $this->existenceCheck($name);
+
         return LiteralField::create($name, $content);
     }
 
@@ -1016,6 +1080,8 @@ class Harvest
         // public function decimal($name, $title = null, $value = '', $maxLength = null, $form = null)
         // return NumericField::create($name, $title, $value, $maxLength, $form)->setScale(2);
 
+        $this->existenceCheck($name);
+
         $field = new DBDecimal($name, $wholeSize, $decimalSize, $defaultValue);
         return $field->scaffoldFormField($title);
     }
@@ -1032,6 +1098,8 @@ class Harvest
 
         // public function double($name, $title = null, $value = '', $maxLength = null, $form = null)
         // return NumericField::create($name, $title, $value, $maxLength, $form);
+
+        $this->existenceCheck($name);
 
         $field = new DBDouble($name, $defaultVal);
         return $field->scaffoldFormField($title);
@@ -1050,6 +1118,8 @@ class Harvest
         // public function float($name, $title = null, $value = '', $maxLength = null, $form = null)
         // return NumericField::create($name, $title, $value, $maxLength, $form)->setScale(null);
 
+        $this->existenceCheck($name);
+
         $field = new DBFloat($name, $defaultVal);
         return $field->scaffoldFormField($title);
     }
@@ -1063,6 +1133,8 @@ class Harvest
         if (!$this->isDBType($name, DBYear::class)) {
             return $this->returnTypeError($name, 'year');
         }
+
+        $this->existenceCheck($name);
 
         $field = new DBYear($name, ($options = []));
         return $field->scaffoldFormField($title);
@@ -1078,6 +1150,8 @@ class Harvest
             return $this->returnTypeError($name, 'percentage');
         }
 
+        $this->existenceCheck($name);
+
         $field = new DBPercentage($name, $precision);
         return $field->scaffoldFormField($title);
     }
@@ -1091,6 +1165,8 @@ class Harvest
         if (!$this->isDBType($name, DBInt::class)) {
             return $this->returnTypeError($name, 'int');
         }
+
+        $this->existenceCheck($name);
 
         $field = new DBInt($name, $defaultVal);
         return $field->scaffoldFormField($title);
@@ -1106,6 +1182,8 @@ class Harvest
             return $this->returnTypeError($name, 'int');
         }
 
+        $this->existenceCheck($name);
+
         $field = new DBBigInt($name, $defaultVal);
         return $field->scaffoldFormField($title);
     }
@@ -1119,6 +1197,8 @@ class Harvest
         if (!$this->isDBType($name, DBLocale::class)) {
             return $this->returnTypeError($name, 'int');
         }
+
+        $this->existenceCheck($name);
 
         $field = new DBLocale($name, $size);
         return $field->scaffoldFormField($title);
@@ -1139,6 +1219,8 @@ class Harvest
         // $field = new DBEnum($name, $enum, $default, $options);
         // return $field->scaffoldFormField($title);
         // return DropdownField::create($name, $title, $source, $value);
+
+        $this->existenceCheck($name);
 
         return $this->field($name);
     }
@@ -1176,6 +1258,8 @@ class Harvest
         GridFieldConfig $customConfig = null,
         $useAutocompleter = true,
     ) {
+        $this->existenceCheck($relationName . 'ID');
+
         return HasOneButtonField::create(
             $this->parent,
             $relationName,
@@ -1232,6 +1316,8 @@ class Harvest
             );
         }
 
+        $this->existenceCheck($name);
+
         return MultiSelectField::create(
             $name,
             $title,
@@ -1252,6 +1338,8 @@ class Harvest
      */
     public function media($name, $title = null)
     {
+        $this->existenceCheck($name);
+
         return EditableUploadField::create(
             $name,
             $title,
@@ -1270,6 +1358,8 @@ class Harvest
      */
     public function mediaSortable($name, $title = null)
     {
+        $this->existenceCheck($name);
+
         return EditableSortableUploadField::create(
             $name,
             $title,
@@ -1287,6 +1377,8 @@ class Harvest
      */
     public function color($name, $title = null, $source = [], $value = null)
     {
+        $this->existenceCheck($name);
+
         return ColorPaletteField::create($name, $title, $source);
     }
 
@@ -1308,6 +1400,8 @@ class Harvest
      */
     public function colorPicker($name, $title = null, $value = '', $form = null)
     {
+        $this->existenceCheck($name);
+
         return ColorField::create($name, $title, $value, $form);
     }
 
@@ -1324,6 +1418,8 @@ class Harvest
         $source = [],
         $value = null,
     ) {
+        $this->existenceCheck($name);
+
         return GroupedColorPaletteField::create($name, $title, $source);
     }
 
@@ -1360,6 +1456,8 @@ class Harvest
         $form = null,
         $schema = '{}',
     ) {
+        $this->existenceCheck($name);
+
         return JSONEditorField::create(
             $name,
             $title,
@@ -1382,6 +1480,8 @@ class Harvest
      */
     public function place($name, $title = null, $value = '')
     {
+        $this->existenceCheck($name);
+
         return PlaceField::create($name, $title, $value);
     }
 
@@ -1396,6 +1496,8 @@ class Harvest
      */
     public function map($name, $title = null, $value = '')
     {
+        $this->existenceCheck($name);
+
         return MapField::create($name, $title, $value);
     }
 
@@ -1411,6 +1513,8 @@ class Harvest
     {
         $this->fields->removeByName($name . 'ID');
 
+        $this->existenceCheck($name);
+
         return LinkField::create($name, $title, $this->parent, $linkConfig);
     }
 
@@ -1422,6 +1526,8 @@ class Harvest
     public function inlineLink($name, $title = null, $value = null)
     {
         $this->fields->removeByName($name . 'ID');
+
+        $this->existenceCheck($name);
 
         return AnyField::create($name, $title, $value);
     }
@@ -1441,6 +1547,8 @@ class Harvest
     {
         // $this->fields->removeByName($name . 'ID');
 
+        $this->existenceCheck($name);
+
         return ManyAnyField::create($name, $title, $dataList);
     }
 
@@ -1452,6 +1560,8 @@ class Harvest
     public function linkSS($name, $title = null, $value = null)
     {
         // $this->fields->removeByName($name . 'ID');
+
+        $this->existenceCheck($name);
 
         return LinkSSField::create($name, $title, $value);
     }
@@ -1479,6 +1589,8 @@ class Harvest
         $mode = 'ace/mode/html',
         $theme = 'ace/theme/github',
     ) {
+        $this->existenceCheck($name);
+
         $field = CodeEditorField::create($name, $title, $value);
         $field->setMode($mode);
         $field->setTheme($theme);
@@ -1518,6 +1630,8 @@ class Harvest
                 $value = $this->parent->$name();
             }
         }
+
+        $this->existenceCheck($name);
 
         return TagField::create($name, $title, $source, $value, $titleField);
     }
@@ -1569,6 +1683,8 @@ class Harvest
             }
         }
 
+        $this->existenceCheck($name);
+
         $grid = $this->grid($name, $title, $source, $gridconfig)
             ->components(['add', 'detail-form', 'delete', 'edit'])
             ->build();
@@ -1585,7 +1701,7 @@ class Harvest
      * DB Type: -
      * Available methods:
      */
-    public function wrapper($children = null)
+    public function wrapper(...$children)
     {
         return Wrapper::create($children);
     }
@@ -1606,6 +1722,8 @@ class Harvest
     ) {
         // $this->lookForSourceObject($name, $title, $sourceClass);
 
+        $this->existenceCheck($name);
+
         return AutoCompleteField::create(
             $name,
             $title,
@@ -1625,6 +1743,8 @@ class Harvest
     public function stringTag($name, $title = null, $source = [], $value = null)
     {
         // $this->lookForSource($name, $title, $source);
+
+        $this->existenceCheck($name);
 
         return StringTagField::create($name, $title, $source, $value);
     }
@@ -1677,6 +1797,10 @@ class Harvest
             $width = $image->getWidth();
             $height = $image->getHeight();
         }
+
+        $this->existenceCheck($XFieldName);
+        $this->existenceCheck($YFieldName);
+        $this->existenceCheck($xySumFieldName);
 
         return ImageCoordsField::create(
             $title,
@@ -1731,6 +1855,8 @@ class Harvest
         $maxLength = null,
         $form = null,
     ) {
+        $this->existenceCheck($name);
+
         return SiteTreeURLSegmentField::create(
             $name,
             $title,
@@ -1746,6 +1872,8 @@ class Harvest
      */
     public function htmlReadonly($name, $title = null, $value = null)
     {
+        $this->existenceCheck($name);
+
         return HTMLReadonlyField::create($name, $title, $value);
     }
 
@@ -1778,6 +1906,8 @@ class Harvest
             $this->parent->$name = $this->parent->dbObject($name)->getValue();
         }
 
+        $this->existenceCheck($name);
+
         return $this->field($name);
     }
 
@@ -1792,6 +1922,8 @@ class Harvest
         $value = '',
         $form = null,
     ) {
+        $this->existenceCheck($name);
+
         return CountryDropdownField::create(
             $name,
             $title,
@@ -1808,6 +1940,8 @@ class Harvest
      */
     public function iconFile($name, $title = null, $sourceFolder = null)
     {
+        $this->existenceCheck($name);
+
         return IconFileField::create($name, $title, $sourceFolder);
     }
 
@@ -1818,6 +1952,8 @@ class Harvest
      */
     public function iconFont($name, $title = null)
     {
+        $this->existenceCheck($name);
+
         return IconFontField::create($name, $title);
     }
 
@@ -1835,6 +1971,8 @@ class Harvest
         if (!$this->isDBType($name, DBPhone::class)) {
             return $this->returnTypeError($name, 'phone');
         }
+
+        $this->existenceCheck($name);
 
         $field = new DBPhone($name, $options);
         return $field->scaffoldFormField($title);
@@ -1867,8 +2005,12 @@ class Harvest
             }
         }
 
+        $nameRelation = $name . 'ID';
+
+        $this->existenceCheck($nameRelation);
+
         return ImageSelectionField::create(
-            $name . 'ID',
+            $nameRelation,
             $title ?? $name,
         )->setImageList($relationList);
     }
@@ -1896,5 +2038,12 @@ class Harvest
             $name . '_error',
             '<div class="alert alert-warning">' . $message . '</div>',
         );
+    }
+
+    private function existenceCheck($name)
+    {
+        if ($name && $this->dataField($name)) {
+            $this->remove($name);
+        }
     }
 }
