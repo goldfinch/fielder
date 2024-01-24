@@ -194,6 +194,39 @@ $harvest->removeAll();
 $harvest->removeAllCurrent();
 ```
 
+> remove fields in tab
+```php
+$harvest->removeFieldsInTab('Root.Main');
+```
+
+> add description field
+```php
+$harvest->description('Title', 'Some field description flies here');
+// ..
+$harvest->description([
+    'Title' => 'Some field description flies here',
+    'URLSegment' => '<strong style="color: red">Red field description</strong>'
+]);
+```
+
+> disable field
+```php
+$harvest->disable('Title');
+$harvest->disable('Title', false); // undisabled
+// ..
+$harvest->disable(['Title', 'Text']);
+$harvest->disable(['Title', 'Text'], false); // undisabled all
+```
+
+> readonly field
+```php
+$harvest->readonly('Title');
+$harvest->readonly('Title', false); // take off readonly
+// ..
+$harvest->readonly(['Title', 'Text']);
+$harvest->readonly(['Title', 'Text'], false); // take off readonly
+```
+
 > add custom error
 ```php
 $harvest->addError('Error message');
@@ -236,7 +269,7 @@ Class: `SilverStripe\Forms\ReadonlyField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->readonly($name, $title = null, $value = null)
+$harvest->readonlyField($name, $title = null, $value = null)
 ```
 
 #### text

@@ -122,6 +122,79 @@ class Harvest
         $this->parent = $parent;
     }
 
+    public function removeFieldsInTab($tabname)
+    {
+        $tab = $this->findTab($tabname);
+
+        if ($tab) {
+            foreach ($tab->getChildren() as $field) {
+                $this->remove($field->getName());
+            }
+        }
+    }
+
+    public function disable($fieldNameOrFields, $state = true)
+    {
+        if (is_string($fieldNameOrFields)) {
+            $field = $this->dataField($fieldNameOrFields);
+
+            if ($field) {
+                $field->setDisabled($state);
+            }
+        } else if (is_array($fieldNameOrFields)) {
+            foreach ($fieldNameOrFields as $fieldname) {
+                $field = $this->dataField($fieldname);
+
+                if ($field) {
+                    $field->setDisabled($state);
+                }
+            }
+        }
+    }
+
+    public function readonly($fieldNameOrFields, $state = true)
+    {
+        if (is_string($fieldNameOrFields)) {
+            $field = $this->dataField($fieldNameOrFields);
+
+            if ($field) {
+                $field->setReadonly($state);
+            }
+        } else if (is_array($fieldNameOrFields)) {
+            foreach ($fieldNameOrFields as $fieldname) {
+                $field = $this->dataField($fieldname);
+
+                if ($field) {
+                    $field->setReadonly($state);
+                }
+            }
+        }
+    }
+
+    public function description($fieldNameOrFields, $description = null)
+    {
+        if (is_string($fieldNameOrFields) && $description) {
+            $field = $this->dataField($fieldNameOrFields);
+
+            if ($field) {
+                $field->setDescription($description);
+            }
+        } else if (is_array($fieldNameOrFields)) {
+            foreach ($fieldNameOrFields as $fieldname => $description) {
+                $field = $this->dataField($fieldname);
+
+                if ($field) {
+                    $field->setDescription($description);
+                }
+            }
+        }
+    }
+
+    public function findTab($tabname)
+    {
+        return $this->fields->findTab($tabname);
+    }
+
     public function field($name, $title = null)
     {
         $obj = $this->parent->dbObject($name);
@@ -410,7 +483,7 @@ class Harvest
      * DB Type: *
      * Available methods:
      */
-    public function readonly($name, $title = null, $value = null)
+    public function readonlyField($name, $title = null, $value = null)
     {
         $this->existenceCheck($name);
 
