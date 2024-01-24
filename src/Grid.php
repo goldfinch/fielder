@@ -1,6 +1,6 @@
 <?php
 
-namespace Goldfinch\Harvest;
+namespace Goldfinch\Fielder;
 
 use Unisolutions\GridField\CopyButton;
 use SilverStripe\Forms\GridField\GridField;

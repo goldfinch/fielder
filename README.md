@@ -1,102 +1,102 @@
 
-# 🦅 Harvest Fields manager for Silverstripe
+# 🦅 Fielder, fields manager for Silverstripe
 
 [![Silverstripe Version](https://img.shields.io/badge/Silverstripe-5.1-005ae1.svg?labelColor=white&logoColor=ffffff&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDEuMDkxIDU4LjU1NSIgZmlsbD0iIzAwNWFlMSIgeG1sbnM6dj0iaHR0cHM6Ly92ZWN0YS5pby9uYW5vIj48cGF0aCBkPSJNNTAuMDE1IDUuODU4bC0yMS4yODMgMTQuOWE2LjUgNi41IDAgMCAwIDcuNDQ4IDEwLjY1NGwyMS4yODMtMTQuOWM4LjgxMy02LjE3IDIwLjk2LTQuMDI4IDI3LjEzIDQuNzg2czQuMDI4IDIwLjk2LTQuNzg1IDI3LjEzbC02LjY5MSA0LjY3NmM1LjU0MiA5LjQxOCAxOC4wNzggNS40NTUgMjMuNzczLTQuNjU0QTMyLjQ3IDMyLjQ3IDAgMCAwIDUwLjAxNSA1Ljg2MnptMS4wNTggNDYuODI3bDIxLjI4NC0xNC45YTYuNSA2LjUgMCAxIDAtNy40NDktMTAuNjUzTDQzLjYyMyA0Mi4wMjhjLTguODEzIDYuMTctMjAuOTU5IDQuMDI5LTI3LjEyOS00Ljc4NHMtNC4wMjktMjAuOTU5IDQuNzg0LTI3LjEyOWw2LjY5MS00LjY3NkMyMi40My0zLjk3NiA5Ljg5NC0uMDEzIDQuMTk4IDEwLjA5NmEzMi40NyAzMi40NyAwIDAgMCA0Ni44NzUgNDIuNTkyeiIvPjwvc3ZnPg==)](https://packagist.org/packages/spatie/schema-org)
-[![Package Version](https://img.shields.io/packagist/v/goldfinch/harvest.svg?labelColor=333&color=F8C630&label=Version)](https://packagist.org/packages/spatie/schema-org)
-[![Total Downloads](https://img.shields.io/packagist/dt/goldfinch/harvest.svg?labelColor=333&color=F8C630&label=Downloads)](https://packagist.org/packages/spatie/schema-org)
-[![License](https://img.shields.io/packagist/l/goldfinch/harvest.svg?labelColor=333&color=F8C630&label=License)](https://packagist.org/packages/spatie/schema-org) 
+[![Package Version](https://img.shields.io/packagist/v/goldfinch/fielder.svg?labelColor=333&color=F8C630&label=Version)](https://packagist.org/packages/spatie/schema-org)
+[![Total Downloads](https://img.shields.io/packagist/dt/goldfinch/fielder.svg?labelColor=333&color=F8C630&label=Downloads)](https://packagist.org/packages/spatie/schema-org)
+[![License](https://img.shields.io/packagist/l/goldfinch/fielder.svg?labelColor=333&color=F8C630&label=License)](https://packagist.org/packages/spatie/schema-org) 
 
-Harvest 🚜 is fields manager and organizer that helps to simplify fields declaration and makes it easy to manage all in one place, keeping it clean with less code.
+Fielder 🚜 is fields manager and organizer that helps to simplify fields declaration and makes it easy to manage all in one place, keeping it clean with less code.
 
 ## Install
 
 ```
-composer require goldfinch/harvest
+composer require goldfinch/fielder
 ```
 
 ## Usage
 
-Add `harvest` method to your DataObject/Page
+Add `fielder` method to your DataObject/Page
 
 ```php
 use SilverStripe\ORM\DataObject;
-use Goldfinch\Harvest\Traits\HarvestTrait;
+use Goldfinch\Fielder\Traits\FielderTrait;
 
 MyAwesomeModel extends DataObject
 {
-    use HarvestTrait;
+    use FielderTrait;
 
-    public function harvest(Harvest $harvest): void
+    public function fielder(Fielder $fielder): void
     {
-        $harvest->remove('Content');
+        $fielder->remove('Content');
 
-        $harvest->require([
+        $fielder->require([
             'FirstName',
             'About',
         ]);
 
-        $harvest->fields([
+        $fielder->fields([
             'Root.Main' => [
-                $harvest->string('FirstName', 'First name'),
-                $harvest->text('About'),
-                $harvest->html('Content'),
+                $fielder->string('FirstName', 'First name'),
+                $fielder->text('About'),
+                $fielder->html('Content'),
             ],
             'Root.Demo' => [
-                $harvest->string('Headline'),
+                $fielder->string('Headline'),
             ],
         ]);
     }
 }
 ```
 
-Add `harvestSettings` method to your `SiteTree` page to manage settings fields (insetead of `getSettingsFields`)
+Add `fielderSettings` method to your `SiteTree` page to manage settings fields (insetead of `getSettingsFields`)
 
 ```php
 use SilverStripe\CMS\Model\SiteTree;
-use Goldfinch\Harvest\Traits\HarvestTrait;
+use Goldfinch\Fielder\Traits\FielderTrait;
 
 MyAwesomePage extends SiteTree
 {
-    use HarvestTrait;
+    use FielderTrait;
 
-    public function harvestSettings(Harvest $harvest)
+    public function fielderSettings(Fielder $fielder)
     {
-        $harvest->remove('ShowInMenus');
+        $fielder->remove('ShowInMenus');
     }
 }
 ```
 
-If for some reason you need to keep `getCMSFields` or `getSettingsFields` but want to use `harvest`, you can do that. Just don't use trait and declare both methods as shown below.
+If for some reason you need to keep `getCMSFields` or `getSettingsFields` but want to use `fielder`, you can do that. Just don't use trait and declare both methods as shown below.
 
 ```php
 use SilverStripe\CMS\Model\SiteTree;
 
 MyAwesomePage extends SiteTree
 {
-    public function harvest(Harvest $harvest): void
+    public function fielder(Fielder $fielder): void
     {
-        $harvest->remove('Content');
+        $fielder->remove('Content');
 
-        $harvest->require([
+        $fielder->require([
             'FirstName',
             'About',
         ]);
 
-        $harvest->fields([
+        $fielder->fields([
             'Root.Main' => [
-                $harvest->string('FirstName', 'First name'),
-                $harvest->text('About'),
-                $harvest->html('Content'),
+                $fielder->string('FirstName', 'First name'),
+                $fielder->text('About'),
+                $fielder->html('Content'),
             ],
             'Root.Demo' => [
-                $harvest->string('Headline'),
+                $fielder->string('Headline'),
             ],
         ]);
     }
 
-    public function harvestSettings(Harvest $harvest)
+    public function fielderSettings(Fielder $fielder)
     {
-        $harvest->remove('ShowInMenus');
+        $fielder->remove('ShowInMenus');
     }
 
     public function getCMSFields()
@@ -105,7 +105,7 @@ MyAwesomePage extends SiteTree
 
         // .. $fields->addFieldsToTab()
 
-        return $this->harvestFields($fields)->getFields();
+        return $this->fielderFields($fields)->getFields();
     }
 
     public function getSettingsFields()
@@ -114,7 +114,7 @@ MyAwesomePage extends SiteTree
 
         // .. $fields->removeByName()
 
-        return $this->harvestSettingsFields($fields)->getFields();
+        return $this->fielderSettingsFields($fields)->getFields();
     }
 }
 ```
@@ -122,21 +122,21 @@ MyAwesomePage extends SiteTree
 #### Available extends that can be triggered via extensions
 
 ```php
-use Goldfinch\Harvest\Harvest;
+use Goldfinch\Fielder\Fielder;
 
-public function updateHarvest(Harvest $harvest): void
+public function updateFielder(Fielder $fielder): void
 {
     // ..
 }
-public function updateHarvestSettings(Harvest $harvest): void
+public function updateFielderSettings(Fielder $fielder): void
 {
     // ..
 }
-public function updateHarvestCompositeValidator(Harvest $harvest)
+public function updateFielderCompositeValidator(Fielder $fielder)
 {
     // ..
 }
-public function updateHarvestValidate(Harvest $harvest)
+public function updateFielderValidate(Fielder $fielder)
 {
     // ..
 }
@@ -146,64 +146,64 @@ public function updateHarvestValidate(Harvest $harvest)
 
 > declare fields in tabs
 ```php
-$harvest->fields([
+$fielder->fields([
   'Root.Main' => [
-    $harvest->string('Title'),
+    $fielder->string('Title'),
   ],
 ])
 ```
 
 > declare fields removing previously declared fields
 ```php
-$harvest->freshFields([
+$fielder->freshFields([
   'Root.Main' => [
-    $harvest->string('Title'),
+    $fielder->string('Title'),
   ],
 ])
 ```
 
 > get data field, same as `dataFieldByName`
 ```php
-$harvest->dataField('Title');
+$fielder->dataField('Title');
 ```
 
 > get field, same as `scaffoldFormField`
 ```php
-$harvest->field('Title');
+$fielder->field('Title');
 ```
 
 > required field
 
 ```php
-$harvest->require('Title')
-$harvest->require(['Title', 'Content']);
+$fielder->require('Title')
+$fielder->require(['Title', 'Content']);
 ```
 
 > remove specific fields
 ```php
-$harvest->remove('Title');
+$fielder->remove('Title');
 ```
 
 > remove all fields 
 ```php
-$harvest->removeAll();
+$fielder->removeAll();
 ```
 
 > remove all fields within the class (ignores fields that were added through inherited or extended classes)
 ```php
-$harvest->removeAllCurrent();
+$fielder->removeAllCurrent();
 ```
 
 > remove fields in tab
 ```php
-$harvest->removeFieldsInTab('Root.Main');
+$fielder->removeFieldsInTab('Root.Main');
 ```
 
 > add description field
 ```php
-$harvest->description('Title', 'Some field description flies here');
+$fielder->description('Title', 'Some field description flies here');
 // ..
-$harvest->description([
+$fielder->description([
     'Title' => 'Some field description flies here',
     'URLSegment' => '<strong style="color: red">Red field description</strong>'
 ]);
@@ -211,25 +211,25 @@ $harvest->description([
 
 > disable field
 ```php
-$harvest->disable('Title');
-$harvest->disable('Title', false); // undisabled
+$fielder->disable('Title');
+$fielder->disable('Title', false); // undisabled
 // ..
-$harvest->disable(['Title', 'Text']);
-$harvest->disable(['Title', 'Text'], false); // undisabled all
+$fielder->disable(['Title', 'Text']);
+$fielder->disable(['Title', 'Text'], false); // undisabled all
 ```
 
 > readonly field
 ```php
-$harvest->readonly('Title');
-$harvest->readonly('Title', false); // take off readonly
+$fielder->readonly('Title');
+$fielder->readonly('Title', false); // take off readonly
 // ..
-$harvest->readonly(['Title', 'Text']);
-$harvest->readonly(['Title', 'Text'], false); // take off readonly
+$fielder->readonly(['Title', 'Text']);
+$fielder->readonly(['Title', 'Text'], false); // take off readonly
 ```
 
 > add custom error
 ```php
-$harvest->addError('Error message');
+$fielder->addError('Error message');
 ```
 
 ## List of available fields
@@ -245,7 +245,7 @@ Class: `SilverStripe\Forms\CheckboxField`
 Suitable DB Type: `Boolean`
 
 ```php
-$harvest->checkbox($name, $title = null, $value = null)
+$fielder->checkbox($name, $title = null, $value = null)
 ```
 
 #### dropdown
@@ -257,7 +257,7 @@ Class: `SilverStripe\Forms\DropdownField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->dropdown($name, $title = null, $source = [], $value = null)
+$fielder->dropdown($name, $title = null, $source = [], $value = null)
 ```
 
 #### readonly
@@ -269,7 +269,7 @@ Class: `SilverStripe\Forms\ReadonlyField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->readonlyField($name, $title = null, $value = null)
+$fielder->readonlyField($name, $title = null, $value = null)
 ```
 
 #### text
@@ -281,7 +281,7 @@ Class: `SilverStripe\Forms\TextareaField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->text($name, $title = null, $value = null)
+$fielder->text($name, $title = null, $value = null)
 ```
 
 #### string
@@ -293,7 +293,7 @@ Class: `SilverStripe\Forms\TextField`
 Suitable DB Type: `Varchar`
 
 ```php
-$harvest->string($name, $title = null, $value = '', $maxLength = null, $form = null)
+$fielder->string($name, $title = null, $value = '', $maxLength = null, $form = null)
 ```
 
 #### password
@@ -305,7 +305,7 @@ Class: `SilverStripe\Forms\PasswordField`
 Suitable DB Type: `Varchar`
 
 ```php
-$harvest->password($name, $title = null, $value = '')
+$fielder->password($name, $title = null, $value = '')
 ```
 
 #### action
@@ -315,7 +315,7 @@ $harvest->password($name, $title = null, $value = '')
 Class: `SilverStripe\Forms\FormAction`
 
 ```php
-$harvest->action($action, $title = '', $form = null)
+$fielder->action($action, $title = '', $form = null)
 ```
 
 #### passwordConfirmed
@@ -327,7 +327,7 @@ Class: `SilverStripe\Forms\ConfirmedPasswordField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->passwordConfirmed($name, $title = null, $value = '', $form = null, $showOnClick = false, $titleConfirmField = null)
+$fielder->passwordConfirmed($name, $title = null, $value = '', $form = null, $showOnClick = false, $titleConfirmField = null)
 ```
 
 #### currency
@@ -339,7 +339,7 @@ Class: `SilverStripe\Forms\CurrencyField`
 Suitable DB Type: `Currency`
 
 ```php
-$harvest->currency($name, $title = null, $value = '', $maxLength = null, $form = null)
+$fielder->currency($name, $title = null, $value = '', $maxLength = null, $form = null)
 ```
 
 #### date
@@ -351,7 +351,7 @@ Class: `SilverStripe\Forms\DateField`
 Suitable DB Type: `Date`
 
 ```php
-$harvest->date($name, $title = null, $value = '', $maxLength = null, $form = null)
+$fielder->date($name, $title = null, $value = '', $maxLength = null, $form = null)
 ```
 
 #### datetime
@@ -363,7 +363,7 @@ Class: `SilverStripe\Forms\DatetimeField`
 Suitable DB Type: `Datetime`
 
 ```php
-$harvest->datetime($name, $title = null, $value = '', $maxLength = null, $form = null)
+$fielder->datetime($name, $title = null, $value = '', $maxLength = null, $form = null)
 ```
 
 #### email
@@ -375,7 +375,7 @@ Class: `SilverStripe\Forms\EmailField`
 Suitable DB Type: `Varchar`
 
 ```php
-$harvest->email($name, $title = null, $value = '', $maxLength = null, $form = null)
+$fielder->email($name, $title = null, $value = '', $maxLength = null, $form = null)
 ```
 
 #### groupedDropdown
@@ -387,9 +387,9 @@ Class: `SilverStripe\Forms\GroupedDropdownField`
 Suitable DB Type: `*`
 
 ```php
-$harvest-> groupedDropdown($name, $title = null, $source = [], $value = null)
+$fielder-> groupedDropdown($name, $title = null, $source = [], $value = null)
 // ..
-$harvest->groupedDropdown('Name', 'Title', [
+$fielder->groupedDropdown('Name', 'Title', [
     'numbers' => [1 => 1, 2 => 2],
     'letters' => [1 => 'A', 2 => 'B'],
 ])
@@ -405,7 +405,7 @@ Class: `SilverStripe\Forms\HTMLEditor\HTMLEditorField`
 Suitable DB Type: `HTMLText`
 
 ```php
-$harvest->html($name, $title = null, $value = '', $config = null)
+$fielder->html($name, $title = null, $value = '', $config = null)
 ```
 
 #### money
@@ -417,7 +417,7 @@ Class: `SilverStripe\Forms\MoneyField`
 Suitable DB Type: `Money`
 
 ```php
-$harvest->money($name, $title = null, $value = '')
+$fielder->money($name, $title = null, $value = '')
 ```
 
 #### numeric
@@ -429,7 +429,7 @@ Class: `SilverStripe\Forms\NumericField`
 Suitable DB Type: `Decimal` `Float` `Int`
 
 ```php
-$harvest->numeric($name, $title = null, $value = '', $maxLength = null, $form = null)
+$fielder->numeric($name, $title = null, $value = '', $maxLength = null, $form = null)
 ```
 
 #### radio
@@ -441,9 +441,9 @@ Class: `SilverStripe\Forms\OptionsetField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->radio($name, $title = null, $source = [], $value = null)
+$fielder->radio($name, $title = null, $source = [], $value = null)
 // ..
-$harvest->radio('Name', 'Title', [1 => 'Option 1', 2 => 'Option 2'])
+$fielder->radio('Name', 'Title', [1 => 'Option 1', 2 => 'Option 2'])
 // $source = FooBar::get()->map()
 ```
 
@@ -456,17 +456,17 @@ Class: `SilverStripe\Forms\SelectionGroup`
 Suitable DB Type: `*`
 
 ```php
-$harvest->selectionGroup($name, $items, $value = null)
+$fielder->selectionGroup($name, $items, $value = null)
 // ..
-$harvest->selectionGroup('Name', [
-    $harvest->selectionGroupItem(
+$fielder->selectionGroup('Name', [
+    $fielder->selectionGroupItem(
         'one',
-        $harvest->literal('one', 'one view'),
+        $fielder->literal('one', 'one view'),
         'one title'
     ),
-    $harvest->selectionGroupItem(
+    $fielder->selectionGroupItem(
         'two',
-        $harvest->literal('two', 'two view'),
+        $fielder->literal('two', 'two view'),
         'two title'
     ),
 ])
@@ -481,7 +481,7 @@ Class: `SilverStripe\Forms\TimeField`
 Suitable DB Type: `Time`
 
 ```php
-$harvest->time($name, $title = null, $value = '', $maxLength = null, $form = null)
+$fielder->time($name, $title = null, $value = '', $maxLength = null, $form = null)
 ```
 
 ### ✳️ Structure fields
@@ -493,11 +493,11 @@ $harvest->time($name, $title = null, $value = '', $maxLength = null, $form = nul
 Class: `SilverStripe\Forms\CompositeField`
 
 ```php
-$harvest->composite($children = null)
+$fielder->composite($children = null)
 // ..
-$harvest->composite([
-    $harvest->string('Title'),
-    $harvest->html('Text'),
+$fielder->composite([
+    $fielder->string('Title'),
+    $fielder->html('Text'),
 ])
 ```
 
@@ -508,11 +508,11 @@ $harvest->composite([
 Class: `SilverStripe\Forms\FieldGroup`
 
 ```php
-$harvest->group($titleOrField = null, ...$otherFields)
+$fielder->group($titleOrField = null, ...$otherFields)
 // ..
-$harvest->group(
-    $harvest->string('Title'),
-    $harvest->html('Text'),
+$fielder->group(
+    $fielder->string('Title'),
+    $fielder->html('Text'),
 )->setTitle('Group Title')
 ```
 
@@ -523,11 +523,11 @@ $harvest->group(
 Class: `SilverStripe\Forms\FieldList`
 
 ```php
-$harvest->list($items = [])
+$fielder->list($items = [])
 // ..
-...$harvest->list([
-    $harvest->string('Title'),
-    $harvest->html('Text'),
+...$fielder->list([
+    $fielder->string('Title'),
+    $fielder->html('Text'),
 ])
 ```
 
@@ -538,9 +538,9 @@ $harvest->list($items = [])
 Class: `SilverStripe\Forms\Tab`
 
 ```php
-$harvest->tab($name, $titleOrField = null, $fields = null)
+$fielder->tab($name, $titleOrField = null, $fields = null)
 // ..
-$harvest->tab('Primary tab', $harvest->header('Header'), $harvest->literal('Literal', '<b>Br</b>eaking <b>Ba</b>d'))
+$fielder->tab('Primary tab', $fielder->header('Header'), $fielder->literal('Literal', '<b>Br</b>eaking <b>Ba</b>d'))
 ```
 
 #### tabSet
@@ -550,11 +550,11 @@ $harvest->tab('Primary tab', $harvest->header('Header'), $harvest->literal('Lite
 Class: `SilverStripe\Forms\TabSet`
 
 ```php
-$harvest->tabSet($name, $titleOrTab = null, $tabs = null)
+$fielder->tabSet($name, $titleOrTab = null, $tabs = null)
 // ..
-$harvest->tabSet('MyTabSetName',
-    $harvest->tab('Primary tab', $harvest->header('Header'), $harvest->literal('Literal', '<b>Br</b>eaking <b>Ba</b>d')),
-    $harvest->tab('Secondary tab', $harvest->header('Header'), $harvest->literal('Literal', '<b>Banshee</b>')),
+$fielder->tabSet('MyTabSetName',
+    $fielder->tab('Primary tab', $fielder->header('Header'), $fielder->literal('Literal', '<b>Br</b>eaking <b>Ba</b>d')),
+    $fielder->tab('Secondary tab', $fielder->header('Header'), $fielder->literal('Literal', '<b>Banshee</b>')),
 )
 ```
 
@@ -565,11 +565,11 @@ $harvest->tabSet('MyTabSetName',
 Class: `SilverStripe\Forms\ToggleCompositeField`
 
 ```php
-$harvest->toggleComposite($name, $title, $children)
+$fielder->toggleComposite($name, $title, $children)
 // ..
-$harvest->toggleComposite('MyToggle', 'Toggle', [
-    $harvest->string('Title'),
-    $harvest->text('Text')
+$fielder->toggleComposite('MyToggle', 'Toggle', [
+    $fielder->string('Title'),
+    $fielder->text('Text')
 ])
 ```
 
@@ -584,7 +584,7 @@ Class: `SilverStripe\AssetAdmin\Forms\UploadField`
 Suitable relationship: `has_one` `has_many` `many_many` `belongs_many_many`
 
 ```php
-$harvest->upload($name, $title = null, SS_List $items = null)
+$fielder->upload($name, $title = null, SS_List $items = null)
 ```
 
 #### file
@@ -596,7 +596,7 @@ Class: `SilverStripe\Forms\FileField`
 Suitable relationship: `has_one` `has_many` `many_many` `belongs_many_many`
 
 ```php
-$harvest->file($name, $title = null, $value = null)
+$fielder->file($name, $title = null, $value = null)
 ```
 
 ### ✳️ Relationship fields
@@ -610,9 +610,9 @@ Class: `SilverStripe\Forms\CheckboxSetField`
 Suitable relationship: `has_many` `many_many` `belongs_many_many`
 
 ```php
-$harvest->checkboxSet($name, $title = null, $source = [], $value = null)
+$fielder->checkboxSet($name, $title = null, $source = [], $value = null)
 // ..
-$harvest->checkboxSet('List', 'List', [1 => 'Set 1', 2 => 'Set 2']),
+$fielder->checkboxSet('List', 'List', [1 => 'Set 1', 2 => 'Set 2']),
 // $source = FooBar::get()->map()
 ```
 
@@ -625,9 +625,9 @@ Class: `SilverStripe\Forms\TreeDropdownField`
 Suitable relationship: `has_one`
 
 ```php
-$harvest->dropdownTree($name, $title = null, $sourceObject = null, $keyField = 'ID', $labelField = 'TreeTitle', $showSearch = true)
+$fielder->dropdownTree($name, $title = null, $sourceObject = null, $keyField = 'ID', $labelField = 'TreeTitle', $showSearch = true)
 // ..
-$harvest->dropdownTree('Page')
+$fielder->dropdownTree('Page')
 ```
 
 #### treeMultiSelect
@@ -639,25 +639,25 @@ Class: `SilverStripe\Forms\TreeMultiselectField`
 Suitable relationship: `has_many` `many_many`
 
 ```php
-$harvest->treeMultiSelect($name, $title = null, $sourceObject = Group::class, $keyField = "ID", $labelField = "Title")
+$fielder->treeMultiSelect($name, $title = null, $sourceObject = Group::class, $keyField = "ID", $labelField = "Title")
 ```
 
 #### grid
 
 > Grid field
 
-Class: `SilverStripe\Forms\GridField\GridField` `Goldfinch\Harvest\Grid`
+Class: `SilverStripe\Forms\GridField\GridField` `Goldfinch\Fielder\Grid`
 
 Suitable relationship: `has_many` `many_many` `belongs_many_many`
 
 ```php
-$harvest->grid($name, $title = null, SS_List $dataList = null, GridFieldConfig $config = null)
+$fielder->grid($name, $title = null, SS_List $dataList = null, GridFieldConfig $config = null)
 // ..
-$harvest->grid('Services', 'Services')->build()
+$fielder->grid('Services', 'Services')->build()
 // ..
-$harvest->grid('Services', 'Services', $this->Services())->build()
+$fielder->grid('Services', 'Services', $this->Services())->build()
 // ..
-$harvest->grid('Cards', 'Cards')
+$fielder->grid('Cards', 'Cards')
     ->config('default')
     ->components([
         'add',
@@ -682,7 +682,7 @@ Class: `SilverStripe\Forms\ListboxField`
 Suitable relationship: `has_many` `many_many` `belongs_many_many`
 
 ```php
-$harvest->listbox($name, $title = null, $source = [], $value = null, $size = null)
+$fielder->listbox($name, $title = null, $source = [], $value = null, $size = null)
 ```
 
 ### ✳️ Utility fields
@@ -694,7 +694,7 @@ $harvest->listbox($name, $title = null, $source = [], $value = null, $size = nul
 Class: `use SilverStripe\Forms\HeaderField;`
 
 ```php
-$harvest->header($name, $title = null, $headingLevel = 2)
+$fielder->header($name, $title = null, $headingLevel = 2)
 ```
 
 #### hidden
@@ -706,7 +706,7 @@ Class: `SilverStripe\Forms\HiddenField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->hidden($name, $title = null, $value = null)
+$fielder->hidden($name, $title = null, $value = null)
 ```
 
 #### label
@@ -716,7 +716,7 @@ $harvest->hidden($name, $title = null, $value = null)
 Class: `SilverStripe\Forms\LabelField`
 
 ```php
-$harvest->label($name, $title = null)
+$fielder->label($name, $title = null)
 ```
 
 #### literal
@@ -726,7 +726,7 @@ $harvest->label($name, $title = null)
 Class: `SilverStripe\Forms\LiteralField`
 
 ```php
-$harvest->literal($name, $content)
+$fielder->literal($name, $content)
 ```
 
 #### nullable
@@ -738,9 +738,9 @@ Class: `SilverStripe\Forms\NullableField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->nullable(FormField $valueField, $isNullLabel = null)
+$fielder->nullable(FormField $valueField, $isNullLabel = null)
 // ..
-$harvest->nullable($harvest->string('Text'))
+$fielder->nullable($fielder->string('Text'))
 ```
 
 #### decimal
@@ -752,7 +752,7 @@ Class: `SilverStripe\ORM\FieldType\DBDecimal`
 Suitable DB Type: `Decimal`
 
 ```php
-$harvest->decimal($name, $title = null, $wholeSize = 9, $decimalSize = 2, $defaultValue = 0)
+$fielder->decimal($name, $title = null, $wholeSize = 9, $decimalSize = 2, $defaultValue = 0)
 ```
 
 #### double
@@ -764,7 +764,7 @@ Class: `SilverStripe\ORM\FieldType\DBDouble`
 Suitable DB Type: `Double`
 
 ```php
-$harvest->double($name, $title = null, $defaultVal = 0)
+$fielder->double($name, $title = null, $defaultVal = 0)
 ```
 
 #### float
@@ -776,7 +776,7 @@ Class: `SilverStripe\ORM\FieldType\DBFloat`
 Suitable DB Type: `Float`
 
 ```php
-$harvest->float($name, $title = null, $defaultVal = 0)
+$fielder->float($name, $title = null, $defaultVal = 0)
 ```
 
 #### year
@@ -788,7 +788,7 @@ Class: `SilverStripe\ORM\FieldType\DBYear`
 Suitable DB Type: `Year`
 
 ```php
-$harvest->year($name, $title = null, $options = [])
+$fielder->year($name, $title = null, $options = [])
 ```
 
 #### percentage
@@ -800,7 +800,7 @@ Class: `SilverStripe\ORM\FieldType\DBPercentage`
 Suitable DB Type: `Percentage | Percentage(6)`
 
 ```php
-$harvest->percentage($name, $title = null, $precision = 4)
+$fielder->percentage($name, $title = null, $precision = 4)
 ```
 
 #### integer
@@ -812,7 +812,7 @@ Class: `SilverStripe\ORM\FieldType\DBInt`
 Suitable DB Type: `Int`
 
 ```php
-$harvest->int($name, $title = null, $defaultVal = 0)
+$fielder->int($name, $title = null, $defaultVal = 0)
 ```
 
 #### big integer
@@ -824,7 +824,7 @@ Class: `SilverStripe\ORM\FieldType\DBBigInt`
 Suitable DB Type: `BigInt`
 
 ```php
-$harvest->bigInt($name, $title = null, $defaultVal = 0)
+$fielder->bigInt($name, $title = null, $defaultVal = 0)
 ```
 
 #### locale
@@ -836,7 +836,7 @@ Class: `SilverStripe\ORM\FieldType\DBLocale`
 Suitable DB Type: `Locale`
 
 ```php
-$harvest->locale($name, $title = null, $size = 16)
+$fielder->locale($name, $title = null, $size = 16)
 ```
 
 #### enum
@@ -848,7 +848,7 @@ Class: `SilverStripe\ORM\FieldType\DBEnum`
 Suitable DB Type: `Enum("Apple,Orange,Kiwi", "Kiwi")`
 
 ```php
-$harvest->enum($name)
+$fielder->enum($name)
 ```
 
 #### siteTreeURLSegment
@@ -860,7 +860,7 @@ Class: `SilverStripe\CMS\Forms\SiteTreeURLSegmentField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->siteTreeURLSegment($name, $title = null, $value = '', $maxLength = null, $form = null)
+$fielder->siteTreeURLSegment($name, $title = null, $value = '', $maxLength = null, $form = null)
 ```
 
 #### htmlReadonly
@@ -872,7 +872,7 @@ Class: `SilverStripe\Forms\HTMLReadonlyField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->htmlReadonly($name, $title = null, $value = null)
+$fielder->htmlReadonly($name, $title = null, $value = null)
 ```
 
 ### ✳️ External fields
@@ -890,7 +890,7 @@ Class: `SilverShop\HasOneField\HasOneButtonField`
 Suitable relationship: `has_one` `belongs_to`
 
 ```php
-$harvest->objectLink($relationName, $fieldName = null, $title = null, GridFieldConfig $customConfig = null, $useAutocompleter = true)
+$fielder->objectLink($relationName, $fieldName = null, $title = null, GridFieldConfig $customConfig = null, $useAutocompleter = true)
 ```
 
 #### object
@@ -906,7 +906,7 @@ Class: `gorriecoe\LinkField\Forms\HasOneLinkField`
 Suitable relationship: `has_one` `belongs_to`
 
 ```php
-$harvest->object($relationName, $title = null, $linkConfig = [], $useAutocompleter = false)
+$fielder->object($relationName, $title = null, $linkConfig = [], $useAutocompleter = false)
 ```
 
 #### multiSelect
@@ -922,10 +922,10 @@ Class: `Kinglozzer\MultiSelectField\Forms\MultiSelectField`
 Suitable relationship: `many_many` `belongs_many_many`
 
 ```php
-$harvest->multiSelect($name, $title = null, $sort = false, $source = null, $titleField = 'Title')
+$fielder->multiSelect($name, $title = null, $sort = false, $source = null, $titleField = 'Title')
 // ..
-$harvest->multiSelect('Services'),
-$harvest->multiSelect('Services', 'Services', 'SortExtra'),
+$fielder->multiSelect('Services'),
+$fielder->multiSelect('Services', 'Services', 'SortExtra'),
 ```
 
 #### media
@@ -941,7 +941,7 @@ Class: `Goldfinch\ImageEditor\Forms\EditableUploadField`
 Suitable relationship: `has_one` `has_many` `many_many` `belongs_many_many`
 
 ```php
-...$harvest->media($name, $title = null)
+...$fielder->media($name, $title = null)
 ```
 
 #### mediaSortable
@@ -957,7 +957,7 @@ Class: `Goldfinch\ImageEditor\Forms\EditableSortableUploadField`
 Suitable relationship: `has_many` `many_many` `belongs_many_many`
 
 ```php
-...$harvest->mediaSortable($name, $title = null)
+...$fielder->mediaSortable($name, $title = null)
 ```
 
 #### color
@@ -973,9 +973,9 @@ Class: `Heyday\ColorPalette\Fields\ColorPaletteField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->color($name, $title = null, $source = [], $value = null)
+$fielder->color($name, $title = null, $source = [], $value = null)
 // ..
-$harvest->color('Color', 'Color', ['yellow' => '#fee12f', 'pink' => '#eb83ad', 'green' => '#70cd77'])
+$fielder->color('Color', 'Color', ['yellow' => '#fee12f', 'pink' => '#eb83ad', 'green' => '#70cd77'])
 ```
 
 #### colorPicker
@@ -991,7 +991,7 @@ Class: `RyanPotter\SilverStripeColorField\Forms\ColorField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->colorPicker($name, $title = null, $value = '', $form = null)
+$fielder->colorPicker($name, $title = null, $value = '', $form = null)
 ```
 
 Additional requirements:
@@ -1017,9 +1017,9 @@ Class: `Heyday\ColorPalette\Fields\GroupedColorPaletteField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->colorGroup($name, $title = null, $source = [], $value = null)
+$fielder->colorGroup($name, $title = null, $source = [], $value = null)
 // ..
-$harvest->colorGroup('Color', 'Color', ['Primary' => ['yellow' => '#fee12f', 'pink' => '#eb83ad'], 'Secondary' => ['green' => '#70cd77']])
+$fielder->colorGroup('Color', 'Color', ['Primary' => ['yellow' => '#fee12f', 'pink' => '#eb83ad'], 'Secondary' => ['green' => '#70cd77']])
 ```
 
 #### json
@@ -1035,7 +1035,7 @@ Class: `Goldfinch\JSONEditor\Forms\JSONEditorField`
 Suitable DB Type: `JSONText` `Goldfinch\JSONEditor\ORM\FieldType\DBJSONText::class`
 
 ```php
-$harvest->json($name, $title = null, $options = [], $value = '{}', $form = null, $schema = '{}')
+$fielder->json($name, $title = null, $options = [], $value = '{}', $form = null, $schema = '{}')
 ```
 
 Additional requirements:
@@ -1061,7 +1061,7 @@ Additional requirements:
 ```
 3) example field
 ```php
-$harvest->json('Parameters')
+$fielder->json('Parameters')
 ```
 
 #### place
@@ -1077,7 +1077,7 @@ Class: `Goldfinch\GoogleFields\Forms\PlaceField`
 Suitable DB Type: `Place`
 
 ```php
-$harvest->place($name, $title = null, $value = '')
+$fielder->place($name, $title = null, $value = '')
 ```
 
 Additional requirements:
@@ -1103,7 +1103,7 @@ Class: `Goldfinch\GoogleFields\Forms\MapField`
 Suitable DB Type: `Map`
 
 ```php
-$harvest->map($name, $title = null, $value = '')
+$fielder->map($name, $title = null, $value = '')
 ```
 
 Additional requirements:
@@ -1130,9 +1130,9 @@ Suitable relationship: `has_one`
 Relationship type: `gorriecoe\Link\Models\Link::class`
 
 ```php
-$harvest->link($name, $title = null, $linkConfig = [])
+$fielder->link($name, $title = null, $linkConfig = [])
 // ..
-$harvest->link('ALink', 'Link')
+$fielder->link('ALink', 'Link')
 ```
 
 #### inlineLink
@@ -1149,7 +1149,7 @@ Suitable relationship: `has_one`
 Relationship type: `SilverStripe\LinkField\Models\Link::class`
 
 ```php
-$harvest->inlineLink($name, $title = null, $value = null)
+$fielder->inlineLink($name, $title = null, $value = null)
 ```
 
 #### inlineLinks
@@ -1166,7 +1166,7 @@ Suitable relationship: `has_many` `many_many` `belongs_many_many`
 Relationship type: `SilverStripe\LinkField\Models\Link::class`
 
 ```php
-$harvest->inlineLinks($name, $title = null, SS_List $dataList = null)
+$fielder->inlineLinks($name, $title = null, SS_List $dataList = null)
 ```
 
 Additional requirements:
@@ -1194,7 +1194,7 @@ Suitable relationship: `has_many` `many_many` `belongs_many_many`
 Relationship type: `SilverStripe\LinkField\Models\Link::class`
 
 ```php
-$harvest->linkSS($name, $title = null, $value = null)
+$fielder->linkSS($name, $title = null, $value = null)
 ```
 
 #### code
@@ -1210,7 +1210,7 @@ Class: `KevinGroeger\CodeEditorField\Forms\CodeEditorField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->code($name, $title = null, $value = null, $mode = 'ace/mode/html', $theme = 'ace/theme/github')
+$fielder->code($name, $title = null, $value = null, $mode = 'ace/mode/html', $theme = 'ace/theme/github')
 ```
 
 #### tag
@@ -1226,7 +1226,7 @@ Class: `SilverStripe\TagField\TagField`
 Suitable relationship: `has_many` `many_many` `belongs_many_many`
 
 ```php
-$harvest->tag($name, $title = null, $source = [], $value = null, $titleField = 'Title')
+$fielder->tag($name, $title = null, $source = [], $value = null, $titleField = 'Title')
 ```
 
 #### points
@@ -1242,7 +1242,7 @@ Class: `LittleGiant\SilverStripeImagePoints\DataObjects\Point`
 Suitable relationship: `has_many` `many_many` `belongs_many_many`
 
 ```php
-$harvest->points($name, $title = null, $source = [], $gridconfig = null)
+$fielder->points($name, $title = null, $source = [], $gridconfig = null)
 ```
 
 Additional requirements:
@@ -1272,7 +1272,7 @@ LittleGiant\SilverStripeImagePoints\DataObjects\Point:
 ```
 3) example field
 ```php
-$harvest->points('ImagePoints')
+$fielder->points('ImagePoints')
 ```
 
 #### wrapper
@@ -1286,7 +1286,7 @@ composer require unclecheese/display-logic
 Class: `UncleCheese\DisplayLogic\Forms\Wrapper`
 
 ```php
-$harvest->wrapper($children)
+$fielder->wrapper($children)
 ```
 
 #### autocomplete
@@ -1302,9 +1302,9 @@ Class: `TractorCow\AutoComplete\AutoCompleteField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->autocomplete($name, $title = null, $value = '', $sourceClass = null, $sourceFields = null)
+$fielder->autocomplete($name, $title = null, $value = '', $sourceClass = null, $sourceFields = null)
 // ..
-$harvest->autocomplete('Page', 'Page', '', Page::class, 'Title')
+$fielder->autocomplete('Page', 'Page', '', Page::class, 'Title')
 ```
 
 #### stringTag
@@ -1320,9 +1320,9 @@ Class: `SilverStripe\TagField\StringTagField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->stringTag($name, $title = null, $source = [], $value = null)
+$fielder->stringTag($name, $title = null, $source = [], $value = null)
 // ..
-$harvest->stringTag('Varchar', 'Varchar', MyDataObject::get())
+$fielder->stringTag('Varchar', 'Varchar', MyDataObject::get())
 ```
 
 #### imageCoords
@@ -1338,10 +1338,10 @@ Class: `Goldfinch\ImageEditor\Forms\ImageCoordsField`
 Suitable relationship: `has_one`
 
 ```php
-$harvest->imageCoords($name, $title, $onlyCanvas = false, $cssGrid = false, $image = null, $XFieldName = null, $YFieldName = null, $xySumFieldName = null, $width = null, $height = null)
+$fielder->imageCoords($name, $title, $onlyCanvas = false, $cssGrid = false, $image = null, $XFieldName = null, $YFieldName = null, $xySumFieldName = null, $width = null, $height = null)
 // ..
-$harvest->imageCoords('Image', 'Focus Point', true)
-$harvest->imageCoords('Image', 'Focus Point')
+$fielder->imageCoords('Image', 'Focus Point', true)
+$fielder->imageCoords('Image', 'Focus Point')
 ```
 
 #### encrypt
@@ -1364,7 +1364,7 @@ Suitable DB Type:
 ```
 
 ```php
-$harvest->encrypt($name)
+$fielder->encrypt($name)
 ```
 
 #### country
@@ -1380,7 +1380,7 @@ Class: `Dynamic\CountryDropdownField\Fields\CountryDropdownField`
 Suitable DB Type: `*`
 
 ```php
-$harvest->country($name, $title = null, $source = [], $value = '', $form = null)
+$fielder->country($name, $title = null, $source = [], $value = '', $form = null)
 ```
 
 #### iconFile
@@ -1396,7 +1396,7 @@ Class: `Goldfinch\Icon\Forms\IconFileField`
 Suitable DB Type: `Icon` `Goldfinch\Icon\ORM\FieldType\DBIcon::class`
 
 ```php
-$harvest->iconFile($name, $title = null, $sourceFolder = null)
+$fielder->iconFile($name, $title = null, $sourceFolder = null)
 ```
 
 Additional requirements:
@@ -1417,7 +1417,7 @@ Class: `Goldfinch\Icon\Forms\IconFontField`
 Suitable DB Type: `Icon` `Goldfinch\Icon\ORM\FieldType\DBIcon::class`
 
 ```php
-$harvest->iconFont($name, $title = null)
+$fielder->iconFont($name, $title = null)
 ```
 
 Additional requirements:
@@ -1438,7 +1438,7 @@ Class: `Innoweb\InternationalPhoneNumberField\ORM\DBPhone`
 Suitable DB Type: `Phone`
 
 ```php
-$harvest->phone($name, $title = null, $options = [])
+$fielder->phone($name, $title = null, $options = [])
 ```
 
 Template output
@@ -1467,9 +1467,9 @@ Suitable relationship:
 ```
 
 ```php
-$harvest->mediaSelect($name, $relationList, $title = null)
+$fielder->mediaSelect($name, $relationList, $title = null)
 // ..
-$harvest->mediaSelect('Image', 'Images')
+$fielder->mediaSelect('Image', 'Images')
 ```
 
 Template output

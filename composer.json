@@ -1,12 +1,12 @@
 {
-    "name": "goldfinch/harvest",
-    "description": "Field manager and orginizer for Silverstripe",
+    "name": "goldfinch/fielder",
+    "description": "Field is fields manager and orginizer for Silverstripe",
     "type": "silverstripe-vendormodule",
     "keywords": [
         "silverstripe",
-        "harvest",
-        "harvest-silverstripe",
-        "harvest-manager",
+        "fielder",
+        "fielder-silverstripe",
+        "fielder-manager",
         "fields-manager",
         "fields-orginizer",
         "fields-orginizer-silverstripe",
@@ -26,7 +26,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Goldfinch\\Harvest\\": "src/"
+            "Goldfinch\\Fielder\\": "src/"
         }
     },
     "minimum-stability": "dev",

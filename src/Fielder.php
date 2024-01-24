@@ -1,8 +1,8 @@
 <?php
 
-namespace Goldfinch\Harvest;
+namespace Goldfinch\Fielder;
 
-use Goldfinch\Harvest\Grid;
+use Goldfinch\Fielder\Grid;
 use Illuminate\Support\Arr;
 use SilverStripe\Forms\Tab;
 use SilverStripe\ORM\SS_List;
@@ -101,7 +101,7 @@ use SilverStripe\LinkField\Form\LinkField as LinkSSField;
 use Dynamic\CountryDropdownField\Fields\CountryDropdownField;
 use Goldfinch\ImageEditor\Forms\EditableSortableUploadField;
 
-class Harvest
+class Fielder
 {
     private $fields = null;
 
@@ -633,7 +633,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->groupedDropdown('Name', 'Title', [
+        $fielder->groupedDropdown('Name', 'Title', [
             'numbers' => [1 => 1, 2 => 2],
             'letters' => [1 => 'A', 2 => 'B'],
         ]),
@@ -696,7 +696,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->radio('Name', 'Title', [1 => 'Option 1', 2 => 'Option 2']),
+        $fielder->radio('Name', 'Title', [1 => 'Option 1', 2 => 'Option 2']),
      * Code example:
         $source = FooBar::get()->map()
      */
@@ -714,15 +714,15 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->selectionGroup('Name', [
-            $harvest->selectionGroupItem(
+        $fielder->selectionGroup('Name', [
+            $fielder->selectionGroupItem(
                 'one',
-                $harvest->literal('one', 'one view'),
+                $fielder->literal('one', 'one view'),
                 'one title'
             ),
-            $harvest->selectionGroupItem(
+            $fielder->selectionGroupItem(
                 'two',
-                $harvest->literal('two', 'two view'),
+                $fielder->literal('two', 'two view'),
                 'two title'
             ),
         ]),
@@ -762,9 +762,9 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->composite([
-            $harvest->string('Title'),
-            $harvest->html('Text'),
+        $fielder->composite([
+            $fielder->string('Title'),
+            $fielder->html('Text'),
         ]),
      */
     public function composite($children = null)
@@ -777,9 +777,9 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->group(
-            $harvest->string('Title'),
-            $harvest->html('Text'),
+        $fielder->group(
+            $fielder->string('Title'),
+            $fielder->html('Text'),
         )->setTitle('Group Title),
      */
     public function group($titleOrField = null, ...$otherFields)
@@ -794,9 +794,9 @@ class Harvest
      * FYI: $fields is FieldList already. Using this field we store new FieldList in FieldList
      *
      * Code example:
-        ...$harvest->list([
-            $harvest->string('Title'),
-            $harvest->html('Text'),
+        ...$fielder->list([
+            $fielder->string('Title'),
+            $fielder->html('Text'),
         ]),
      */
     public function list($items = [])
@@ -809,7 +809,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->tab('Primary tab', $harvest->header('Header'), $harvest->literal('Literal', '<b>Br</b>eaking <b>Ba</b>d')),
+        $fielder->tab('Primary tab', $fielder->header('Header'), $fielder->literal('Literal', '<b>Br</b>eaking <b>Ba</b>d')),
      */
     public function tab($name, $titleOrField = null, $fields = null)
     {
@@ -823,9 +823,9 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->tabSet('MyTabSetName',
-            $harvest->tab('Primary tab', $harvest->header('Header'), $harvest->literal('Literal', '<b>Br</b>eaking <b>Ba</b>d')),
-            $harvest->tab('Secondary tab', $harvest->header('Header'), $harvest->literal('Literal', '<b>Banshee</b>')),
+        $fielder->tabSet('MyTabSetName',
+            $fielder->tab('Primary tab', $fielder->header('Header'), $fielder->literal('Literal', '<b>Br</b>eaking <b>Ba</b>d')),
+            $fielder->tab('Secondary tab', $fielder->header('Header'), $fielder->literal('Literal', '<b>Banshee</b>')),
         ),
      */
     public function tabSet($name, $titleOrTab = null, $tabs = null)
@@ -840,9 +840,9 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->toggleComposite('MyToggle', 'Toggle', [
-            $harvest->string('Title'),
-            $harvest->text('Text')
+        $fielder->toggleComposite('MyToggle', 'Toggle', [
+            $fielder->string('Title'),
+            $fielder->text('Text')
         ]),
      */
     public function toggleComposite($name, $title, $children)
@@ -886,7 +886,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->checkboxSet('List', 'List', [1 => 'Set 1', 2 => 'Set 2']),
+        $fielder->checkboxSet('List', 'List', [1 => 'Set 1', 2 => 'Set 2']),
      * Code example:
         $source = FooBar::get()->map()
      */
@@ -921,7 +921,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->dropdownTree('Page'),
+        $fielder->dropdownTree('Page'),
      */
     public function dropdownTree(
         $name,
@@ -984,11 +984,11 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->grid('Services', 'Services')->build(),
+        $fielder->grid('Services', 'Services')->build(),
 
-        $harvest->grid('Services', 'Services', $this->Services())->build(),
+        $fielder->grid('Services', 'Services', $this->Services())->build(),
 
-        $harvest->grid('Cards', 'Cards')
+        $fielder->grid('Cards', 'Cards')
             ->config('default')
             ->components([
                 'add',
@@ -1021,7 +1021,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->listbox('List'),
+        $fielder->listbox('List'),
      */
     public function listbox(
         $name,
@@ -1109,7 +1109,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->nullable($harvest->string('Text')),
+        $fielder->nullable($fielder->string('Text')),
      */
     public function nullable(FormField $valueField, $isNullLabel = null)
     {
@@ -1322,7 +1322,7 @@ class Harvest
      * Allowed relations: has_one | belongs_to
      * Available methods:
      *
-        $harvest->objectLink('Project'),
+        $fielder->objectLink('Project'),
      */
     public function objectLink(
         $relationName,
@@ -1369,8 +1369,8 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->multiSelect('Services'),
-        $harvest->multiSelect('Services', 'Services', 'SortExtra'),
+        $fielder->multiSelect('Services'),
+        $fielder->multiSelect('Services', 'Services', 'SortExtra'),
      */
     public function multiSelect(
         $name,
@@ -1407,7 +1407,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        ...$harvest->media('Image'),
+        ...$fielder->media('Image'),
      */
     public function media($name, $title = null)
     {
@@ -1427,7 +1427,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        ...$harvest->mediaSortable('Images'),
+        ...$fielder->mediaSortable('Images'),
      */
     public function mediaSortable($name, $title = null)
     {
@@ -1446,7 +1446,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->color('Color', 'Color', ['yellow' => '#fee12f', 'pink' => '#eb83ad', 'green' => '#70cd77']),
+        $fielder->color('Color', 'Color', ['yellow' => '#fee12f', 'pink' => '#eb83ad', 'green' => '#70cd77']),
      */
     public function color($name, $title = null, $source = [], $value = null)
     {
@@ -1483,7 +1483,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->colorGroup('Color', 'Color', ['Primary' => ['yellow' => '#fee12f', 'pink' => '#eb83ad'], 'Secondary' => ['green' => '#70cd77']]),
+        $fielder->colorGroup('Color', 'Color', ['Primary' => ['yellow' => '#fee12f', 'pink' => '#eb83ad'], 'Secondary' => ['green' => '#70cd77']]),
      */
     public function colorGroup(
         $name,
@@ -1519,7 +1519,7 @@ class Harvest
 
       }
      * 3):
-      $harvest->json('Parameters'),
+      $fielder->json('Parameters'),
      */
     public function json(
         $name,
@@ -1580,7 +1580,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->link('ALink', 'Link'),
+        $fielder->link('ALink', 'Link'),
      */
     public function link($name, $title = null, $linkConfig = [])
     {
@@ -1734,7 +1734,7 @@ class Harvest
           image_width: 1918
           image_height: 822
      * Code example:
-        $harvest->points('ImagePoints'),
+        $fielder->points('ImagePoints'),
      */
     public function points(
         $name,
@@ -1784,7 +1784,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->autocomplete('Page', 'Page', '', Page::class, 'Title'),
+        $fielder->autocomplete('Page', 'Page', '', Page::class, 'Title'),
      */
     public function autocomplete(
         $name,
@@ -1811,7 +1811,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->stringTag('Varchar', 'Varchar', CardItem::get()),
+        $fielder->stringTag('Varchar', 'Varchar', CardItem::get()),
      */
     public function stringTag($name, $title = null, $source = [], $value = null)
     {
@@ -1827,7 +1827,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->readonlyTag('Text', 'Text', [1 => 'Tag 1', 2 => 'Tag 2']),
+        $fielder->readonlyTag('Text', 'Text', [1 => 'Tag 1', 2 => 'Tag 2']),
      */
     // public function readonlyTag($name, $title = '', $source = [], $value = null, $titleField = 'Title')
     // {
@@ -1840,8 +1840,8 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->imageCoords('Image', 'Focus Point', true),
-        $harvest->imageCoords('Image', 'Focus Point'),
+        $fielder->imageCoords('Image', 'Focus Point', true),
+        $fielder->imageCoords('Image', 'Focus Point'),
      */
     public function imageCoords(
         $name,
@@ -1900,7 +1900,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->focusPoint('FocusPoint', 'Focus Point', $this->Image()),
+        $fielder->focusPoint('FocusPoint', 'Focus Point', $this->Image()),
      */
     // public function focusPoint(string $name, ?string $title = null, ?Image $image = null)
     // {
@@ -2060,7 +2060,7 @@ class Harvest
      * Available methods:
      *
      * Code example:
-        $harvest->mediaSelect('Image', 'Images'),
+        $fielder->mediaSelect('Image', 'Images'),
      */
     public function mediaSelect($name, $relationList, $title = null)
     {

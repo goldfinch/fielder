@@ -1,6 +1,6 @@
 ---
-Name: goldfinch-harvest
+Name: goldfinch-fielder
 ---
 SilverStripe\ORM\DataObject:
   extensions:
-    - Goldfinch\Harvest\Extensions\HarvestExtension
+    - Goldfinch\Fielder\Extensions\FielderExtension
