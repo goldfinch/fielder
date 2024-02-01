@@ -111,6 +111,8 @@ class Fielder
 
     private $requireFields = [];
 
+    private $validatorRules = [];
+
     private $error = null;
 
     private $parent = null;
@@ -351,6 +353,16 @@ class Fielder
 
             $this->remove($array);
         }
+    }
+
+    public function validate($rules)
+    {
+        $this->validatorRules = array_merge($this->validatorRules, $rules);
+    }
+
+    public function getValidatorRules()
+    {
+        return $this->validatorRules;
     }
 
     public function require($fields)

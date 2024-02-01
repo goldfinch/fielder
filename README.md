@@ -232,6 +232,19 @@ $fielder->readonly(['Title', 'Text'], false); // take off readonly
 $fielder->addError('Error message');
 ```
 
+> validate fields
+
+```php
+$fielder->validate([
+    'Title' => function($value, $fail) {
+        $max = 100;
+        if (strlen($value) > $max) {
+            $fail('The :attribute must not be over ' . $max . ' characters.');
+        }
+    }
+]);
+```
+
 ## List of available fields
 
 ### ✳️ General fields
