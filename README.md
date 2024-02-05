@@ -562,9 +562,10 @@ Class: `SilverStripe\Forms\FieldGroup`
 $fielder->group($titleOrField = null, ...$otherFields)
 // ..
 $fielder->group(
+    'Group name',
     $fielder->string('Title'),
     $fielder->html('Text'),
-)->setTitle('Group Title')
+)
 ```
 
 #### list
