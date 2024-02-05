@@ -109,7 +109,7 @@ class Fielder
 
     private $allFieldsRemoved = false;
 
-    private $requireFields = [];
+    private $requiredFields = [];
 
     private $validatorRules = [];
 
@@ -365,19 +365,19 @@ class Fielder
         return $this->validatorRules;
     }
 
-    public function require($fields)
+    public function required($fields)
     {
         $this->setRequireFields($fields);
     }
 
     public function setRequireFields($fields)
     {
-        $this->requireFields = is_array($fields) ? $fields : [$fields];
+        $this->requiredFields = is_array($fields) ? $fields : [$fields];
     }
 
     public function getRequireFields()
     {
-        return $this->requireFields;
+        return $this->requiredFields;
     }
 
     public function addError($error)

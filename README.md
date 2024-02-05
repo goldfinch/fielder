@@ -30,7 +30,7 @@ MyAwesomeModel extends DataObject
     {
         $fielder->remove('Content');
 
-        $fielder->require([
+        $fielder->required([
             'FirstName',
             'About',
         ]);
@@ -77,7 +77,7 @@ MyAwesomePage extends SiteTree
     {
         $fielder->remove('Content');
 
-        $fielder->require([
+        $fielder->required([
             'FirstName',
             'About',
         ]);
@@ -175,8 +175,14 @@ $fielder->field('Title');
 > required field
 
 ```php
-$fielder->require('Title')
-$fielder->require(['Title', 'Content']);
+$fielder->required('Title')
+$fielder->required(['Title', 'Content']);
+
+//through validate method (recommended)
+
+$fielder->validate([
+    'Title' => 'required',
+]);
 ```
 
 > remove specific fields
@@ -234,6 +240,8 @@ $fielder->addError('Error message');
 
 > validate fields
 
+**Basic closure validation per each field**
+
 ```php
 $fielder->validate([
     'Title' => function($value, $fail) {
@@ -242,6 +250,36 @@ $fielder->validate([
             $fail('The :attribute must not be over ' . $max . ' characters.');
         }
     }
+]);
+```
+
+**Laravel approach (recommended)**
+
+This package comes with Laravel validation components that are ready to use. For more info on what rules are available and how to use them, please refer to [this list](https://laravel.com/docs/10.x/validation#available-validation-rules)
+
+```php
+use Goldfinch\Illuminate\Rule;
+
+$fielder->validate([
+    'Title' => 'required|regex:/^[\d\s\+\-]+$/',
+    'Email' => 'required|email',
+    'Fruits' => ['required', Rule::in(['apple', 'orange', 'kiwi'])],
+]);
+```
+
+You can also create a custom rule that will handle your specific validation logic. Use [**Taz**](https://github.com/goldfinch/taz)🌪️ to create a new rule.
+
+eg:
+```bash
+php taz make:rule PhoneRule
+```
+
+and simply implement it in your validation rules:
+```php
+use App\Rules\PhoneRule;
+
+$fielder->validate([
+    'Phone' => ['required', new PhoneRule()],
 ]);
 ```
 
