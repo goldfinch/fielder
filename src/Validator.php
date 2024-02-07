@@ -48,6 +48,8 @@ class Validator
 
     public static function validateClosure($rules, $result): ValidationResult
     {
+        $parent = self::$parent;
+
         foreach ($rules as $field => $closure) {
 
             $value = $parent->$field;
