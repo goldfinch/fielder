@@ -10,7 +10,7 @@ Fielder 🚜 is fields manager and organizer that helps to simplify fields decla
 
 ## Install
 
-```
+```bash
 composer require goldfinch/fielder
 ```
 
@@ -931,7 +931,7 @@ $fielder->htmlReadonly($name, $title = null, $value = null)
 
 #### objectLink
 
-```
+```bash
 composer require silvershop/silverstripe-hasonefield dev-main
 ```
 
@@ -947,7 +947,7 @@ $fielder->objectLink($relationName, $fieldName = null, $title = null, GridFieldC
 
 #### object
 
-```
+```bash
 composer require gorriecoe/silverstripe-linkfield ^1.1
 ```
 
@@ -963,7 +963,7 @@ $fielder->object($relationName, $title = null, $linkConfig = [], $useAutocomplet
 
 #### multiSelect
 
-```
+```bash
 composer require kinglozzer/multiselectfield ^2.0
 ```
 
@@ -982,7 +982,7 @@ $fielder->multiSelect('Services', 'Services', 'SortExtra'),
 
 #### media
 
-```
+```bash
 composer require goldfinch/image-editor
 ```
 
@@ -998,7 +998,7 @@ Suitable relationship: `has_one` `has_many` `many_many` `belongs_many_many`
 
 #### mediaSortable
 
-```
+```bash
 composer require goldfinch/image-editor
 ```
 
@@ -1014,7 +1014,7 @@ Suitable relationship: `has_many` `many_many` `belongs_many_many`
 
 #### color
 
-```
+```bash
 composer require heyday/silverstripe-colorpalette ^2.1
 ```
 
@@ -1032,7 +1032,7 @@ $fielder->color('Color', 'Color', ['yellow' => '#fee12f', 'pink' => '#eb83ad', '
 
 #### colorPicker
 
-```
+```bash
 composer require ryanpotter/silverstripe-color-field ^1.0
 ```
 
@@ -1058,7 +1058,7 @@ RyanPotter\SilverStripeColorField\Forms\ColorField:
 
 #### colorGroup
 
-```
+```bash
 composer require heyday/silverstripe-colorpalette ^2.1
 ```
 
@@ -1076,7 +1076,7 @@ $fielder->colorGroup('Color', 'Color', ['Primary' => ['yellow' => '#fee12f', 'pi
 
 #### json
 
-```
+```bash
 composer require goldfinch/json-editor
 ```
 
@@ -1118,7 +1118,7 @@ $fielder->json('Parameters')
 
 #### place
 
-```
+```bash
 composer require goldfinch/google-fields
 ```
 
@@ -1144,7 +1144,7 @@ See: [github.com/goldfinch/google-fields](https://github.com/goldfinch/google-fi
 
 #### map
 
-```
+```bash
 composer require goldfinch/google-fields
 ```
 
@@ -1170,7 +1170,7 @@ See: [github.com/goldfinch/google-fields](https://github.com/goldfinch/google-fi
 
 #### link
 
-```
+```bash
 composer require gorriecoe/silverstripe-linkfield ^1.1
 ```
 
@@ -1189,7 +1189,7 @@ $fielder->link('ALink', 'Link')
 
 #### inlineLink
 
-```
+```bash
 composer require maxime-rainville/anyfield ^0.0.0
 ```
 
@@ -1206,7 +1206,7 @@ $fielder->inlineLink($name, $title = null, $value = null)
 
 #### inlineLinks
 
-```
+```bash
 composer require maxime-rainville/anyfield ^0.0.0
 ```
 
@@ -1234,7 +1234,7 @@ private static $has_one = [
 
 #### linkSS
 
-```
+```bash
 composer require silverstripe/linkfield ^3
 ```
 
@@ -1251,7 +1251,7 @@ $fielder->linkSS($name, $title = null, $value = null)
 
 #### code
 
-```
+```bash
 composer require kevingroeger/codeeditorfield ^1.2
 ```
 
@@ -1267,7 +1267,7 @@ $fielder->code($name, $title = null, $value = null, $mode = 'ace/mode/html', $th
 
 #### tag
 
-```
+```bash
 composer require silverstripe/tagfield ^3.0
 ```
 
@@ -1283,7 +1283,7 @@ $fielder->tag($name, $title = null, $source = [], $value = null, $titleField = '
 
 #### points
 
-```
+```bash
 composer require goldfinch/silverstripe-image-points
 ```
 
@@ -1329,7 +1329,7 @@ $fielder->points('ImagePoints')
 
 #### wrapper
 
-```
+```bash
 composer require unclecheese/display-logic
 ```
 
@@ -1343,7 +1343,7 @@ $fielder->wrapper($children)
 
 #### autocomplete
 
-```
+```bash
 composer require tractorcow/silverstripe-autocomplete ^5.0
 ```
 
@@ -1361,7 +1361,7 @@ $fielder->autocomplete('Page', 'Page', '', Page::class, 'Title')
 
 #### stringTag
 
-```
+```bash
 composer require silverstripe/tagfield ^3.0
 ```
 
@@ -1379,7 +1379,7 @@ $fielder->stringTag('Varchar', 'Varchar', MyDataObject::get())
 
 #### imageCoords
 
-```
+```bash
 composer require goldfinch/image-editor
 ```
 
@@ -1398,7 +1398,7 @@ $fielder->imageCoords('Image', 'Focus Point')
 
 #### encrypt
 
-```
+```bash
 composer require lekoala/silverstripe-encrypt dev-master
 ```
 
@@ -1421,7 +1421,7 @@ $fielder->encrypt($name)
 
 #### country
 
-```
+```bash
 composer require dynamic/silverstripe-country-dropdown-field ^2.0
 ```
 
@@ -1437,7 +1437,7 @@ $fielder->country($name, $title = null, $source = [], $value = '', $form = null)
 
 #### iconFile
 
-```
+```bash
 composer require goldfinch/icon
 ```
 
@@ -1458,7 +1458,7 @@ Set .yml config
 
 #### iconFont
 
-```
+```bash
 composer require goldfinch/icon
 ```
 
@@ -1479,7 +1479,7 @@ Set .yml config
 
 #### phone
 
-```
+```bash
 composer require innoweb/silverstripe-international-phone-number-field dev-master
 ```
 
@@ -1504,7 +1504,7 @@ $Phone.URL
 
 #### mediaSelect
 
-```
+```bash
 composer require goldfinch/silverstripe-imageselection-field
 ```
 
