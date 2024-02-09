@@ -945,7 +945,7 @@ class Fielder
     ) {
         $this->lookForSourceObject($name, $title, $sourceObject);
 
-        if (!is_subclass_of(new $sourceObject(), SiteTree::class)) {
+        if (!is_subclass_of(new $sourceObject(), SiteTree::class) && $sourceObject != SiteTree::class) {
             return $this->returnError(
                 $name,
                 $name .
