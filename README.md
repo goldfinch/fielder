@@ -1532,3 +1532,7 @@ $Phone.E164
 $Phone.RFC3966
 $Phone.URL
 ```
+
+## License
+
+The MIT License (MIT)
