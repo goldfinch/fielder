@@ -48,8 +48,7 @@ use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\SelectionGroup;
 use SilverStripe\ORM\FieldType\DBEnum;
 use SilverStripe\ORM\FieldType\DBYear;
-use Goldfinch\Icon\Forms\IconFileField;
-use Goldfinch\Icon\Forms\IconFontField;
+use Goldfinch\IconField\Forms\IconField;
 use SilverStripe\ORM\FieldType\DBFloat;
 use SilverStripe\AnyField\Form\AnyField;
 use SilverStripe\Forms\CheckboxSetField;
@@ -2019,27 +2018,15 @@ class Fielder
     }
 
     /**
-     * DB Type: Goldfinch\Icon\ORM\FieldType\DBIcon
+     * DB Type: Goldfinch\IconField\ORM\FieldType\DBIcon
      * Available methods:
-     * 1) required .yml config (see goldfinch/icon/README.md)
+     * 1) required .yml config (see goldfinch/icon-field/README.md)
      */
-    public function iconFile($name, $title = null, $sourceFolder = null)
+    public function icon($set, $name, $title = null, $value = '')
     {
         $this->existenceCheck($name);
 
-        return IconFileField::create($name, $title, $sourceFolder);
-    }
-
-    /**
-     * DB Type: Goldfinch\Icon\ORM\FieldType\DBIcon
-     * Available methods:
-     * 1) required .yml config (see goldfinch/icon/README.md)
-     */
-    public function iconFont($name, $title = null)
-    {
-        $this->existenceCheck($name);
-
-        return IconFontField::create($name, $title);
+        return IconField::create($set, $name, $title, $value);
     }
 
     /**

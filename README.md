@@ -1435,47 +1435,26 @@ Suitable DB Type: `*`
 $fielder->country($name, $title = null, $source = [], $value = '', $form = null)
 ```
 
-#### iconFile
+#### icon
 
 ```bash
-composer require goldfinch/icon
+composer require goldfinch/icon-field
 ```
 
-> IconFile field
+> Icon field
 
-Class: `Goldfinch\Icon\Forms\IconFileField`
+Class: `Goldfinch\IconField\Forms\IconField`
 
-Suitable DB Type: `Icon` `Goldfinch\Icon\ORM\FieldType\DBIcon::class`
+Suitable DB Type: `Icon` `Goldfinch\IconField\ORM\FieldType\DBIcon::class`
 
 ```php
-$fielder->iconFile($name, $title = null, $sourceFolder = null)
+$fielder->icon($set, $name, $title = null, $value = '')
 ```
 
 Additional requirements:
 
 Set .yml config
-[github.com/goldfinch/icon](https://github.com/goldfinch/icon)
-
-#### iconFont
-
-```bash
-composer require goldfinch/icon
-```
-
-> IconFont field
-
-Class: `Goldfinch\Icon\Forms\IconFontField`
-
-Suitable DB Type: `Icon` `Goldfinch\Icon\ORM\FieldType\DBIcon::class`
-
-```php
-$fielder->iconFont($name, $title = null)
-```
-
-Additional requirements:
-
-Set .yml config
-[github.com/goldfinch/icon](https://github.com/goldfinch/icon)
+[github.com/goldfinch/icon-field](https://github.com/goldfinch/icon-field)
 
 #### phone
 
