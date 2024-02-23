@@ -48,8 +48,8 @@ use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\SelectionGroup;
 use SilverStripe\ORM\FieldType\DBEnum;
 use SilverStripe\ORM\FieldType\DBYear;
-use Goldfinch\IconField\Forms\IconField;
 use SilverStripe\ORM\FieldType\DBFloat;
+use Goldfinch\IconField\Forms\IconField;
 use SilverStripe\AnyField\Form\AnyField;
 use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\ORM\FieldType\DBBigInt;
@@ -61,13 +61,14 @@ use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\ORM\FieldType\DBDecimal;
 use SilverStripe\TagField\StringTagField;
 use Goldfinch\GoogleFields\Forms\MapField;
-use Goldfinch\GoogleFields\Forms\PlaceField;
+use Goldfinch\VideoField\Forms\VideoField;
 use DNADesign\Elemental\Models\BaseElement;
 use JonoM\FocusPoint\Forms\FocusPointField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\SelectionGroup_Item;
 use SilverStripe\TagField\ReadonlyTagField;
 use UncleCheese\DisplayLogic\Forms\Wrapper;
+use Goldfinch\GoogleFields\Forms\PlaceField;
 use SilverStripe\AnyField\Form\ManyAnyField;
 use SilverStripe\Forms\GroupedDropdownField;
 use SilverStripe\Forms\ToggleCompositeField;
@@ -82,23 +83,23 @@ use Goldfinch\JSONEditor\Forms\JSONEditorField;
 use SilverStripe\CMS\Forms\AnchorSelectorField;
 use SilverStripe\LinkField\Form\MultiLinkField;
 use SilverStripe\VersionedAdmin\Forms\DiffField;
+use Goldfinch\ImageEditor\Forms\ImageCoordsField;
 use Heyday\ColorPalette\Fields\ColorPaletteField;
 use SilverStripe\Forms\GridField\GridFieldConfig;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use SilverStripe\CMS\Forms\SiteTreeURLSegmentField;
+use Goldfinch\ImageEditor\Forms\EditableUploadField;
 use SilverStripe\AssetAdmin\Forms\PreviewImageField;
-use Goldfinch\ImageEditor\Forms\ImageCoordsField;
 use Innoweb\InternationalPhoneNumberField\ORM\DBPhone;
 use KevinGroeger\CodeEditorField\Forms\CodeEditorField;
 use Kinglozzer\MultiSelectField\Forms\MultiSelectField;
 use RyanPotter\SilverStripeColorField\Forms\ColorField;
 use Heyday\ColorPalette\Fields\GroupedColorPaletteField;
-use Goldfinch\ImageEditor\Forms\EditableUploadField;
 use LittleGiant\SilverStripeImagePoints\Forms\PointField;
 use NSWDPC\Forms\ImageSelectionField\ImageSelectionField;
 use SilverStripe\LinkField\Form\LinkField as LinkSSField;
-use Dynamic\CountryDropdownField\Fields\CountryDropdownField;
 use Goldfinch\ImageEditor\Forms\EditableSortableUploadField;
+use Dynamic\CountryDropdownField\Fields\CountryDropdownField;
 
 class Fielder
 {
@@ -1531,6 +1532,7 @@ class Fielder
       }
      * 3):
       $fielder->json('Parameters'),
+      $fielder->json('Parameters')->compact()->nolabel(),
      */
     public function json(
         $name,
@@ -1551,6 +1553,19 @@ class Fielder
             $form,
             $schema,
         );
+    }
+
+    /**
+     * DB Type:
+        'Video' => 'Video',
+
+     * See https://github.com/goldfinch/video-field
+     */
+    public function video($name, $title = null, $value = '', $static = false)
+    {
+        $this->existenceCheck($name);
+
+        return VideoField::create($this->parent, $name, $title, $value, $static);
     }
 
     /**

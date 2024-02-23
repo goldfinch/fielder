@@ -1116,6 +1116,24 @@ Additional requirements:
 $fielder->json('Parameters')
 ```
 
+#### video
+
+```bash
+composer require goldfinch/video-field
+```
+
+> Video field
+
+Class: `Goldfinch\VideoField\Forms\VideoField`
+
+Suitable DB Type: `Video`
+
+```php
+$fielder->video($name, $title = null, $value = '', $static = false)
+```
+
+See: [github.com/goldfinch/video-field](https://github.com/goldfinch/video-field)
+
 #### place
 
 ```bash
