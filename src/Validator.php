@@ -3,26 +3,41 @@
 namespace Goldfinch\Fielder;
 
 use Closure;
-use Goldfinch\Illuminate\Validator as IlluminateValidator;
+use SilverStripe\Core\Extension;
+use SilverStripe\Versioned\ChangeSet;
 use SilverStripe\ORM\ValidationResult;
+use SilverStripe\Versioned\ChangeSetItem;
 use SilverStripe\ORM\FieldType\DBHTMLText;
+use Goldfinch\Illuminate\Validator as IlluminateValidator;
 
 class Validator
 {
     private static $validation;
     private static $parent;
+    private static $extension;
 
     public function __construct($parent, ValidationResult $validation)
     {
-        self::$parent = $parent;
         self::$validation = $validation;
+
+        if (is_subclass_of($parent, Extension::class)) {
+            self::$extension = $parent;
+            self::$parent = $parent->getOwner();
+        } else {
+            self::$parent = $parent;
+        }
     }
 
     public static function validateCommon($rules, $result): ValidationResult
     {
         $parent = self::$parent;
+        // $data = $parent->toMap();
 
-        $validator = IlluminateValidator::validate($parent->toMap(), $rules, [], [], false);
+        foreach($rules as $n => $r) {
+            $data[$n] = $parent->$n;
+        }
+
+        $validator = IlluminateValidator::validate($data, $rules, [], [], false);
 
         if (is_array($validator)) {
 
@@ -75,18 +90,24 @@ class Validator
         $result = self::$validation;
         $parent = self::$parent;
 
-        $fielder = $parent->fielderFields($parent->getCMSFields());
+        if (in_array(get_class($parent), [
+            ChangeSetItem::class,
+            ChangeSet::class,
+        ])) {
+            return $result;
+        }
+
+        $fielder = $parent->getCMSFields()->getFielder();
+        // $fielder = $parent->fielderFields($parent->getCMSFields());
 
         $closureRules = [];
         $commonRules = [];
 
-        foreach ($fielder->getValidatorRules() as $field => $rule) {
+        self::rulesBucket($fielder, $closureRules, $commonRules);
 
-            if ($rule instanceof Closure) {
-                $closureRules[$field] = $rule;
-            } else {
-                $commonRules[$field] = $rule;
-            }
+        // settings fields
+        if (method_exists($parent, 'getSettingsFields') || method_exists($parent, 'updateSettingsFields')) { //
+            $fielder = $parent->getSettingsFields()->getFielder();
         }
 
         if (!empty($closureRules)) {
@@ -98,6 +119,18 @@ class Validator
         }
 
         return $result;
+    }
+
+    protected static function rulesBucket(&$fielder, &$closureRules, &$commonRules)
+    {
+        foreach ($fielder->getValidatorRules() as $field => $rule) {
+
+            if ($rule instanceof Closure) {
+                $closureRules[$field] = $rule;
+            } else {
+                $commonRules[$field] = $rule;
+            }
+        }
     }
 
     public static function create(...$args): static

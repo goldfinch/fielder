@@ -1,6 +1,12 @@
 ---
 Name: goldfinch-fielder
+After: '#coreextensions'
 ---
+
+SilverStripe\Forms\FieldList:
+  extensions:
+    - Goldfinch\Fielder\Extensions\FieldListExtension
+
 SilverStripe\ORM\DataObject:
   extensions:
     - Goldfinch\Fielder\Extensions\FielderExtension

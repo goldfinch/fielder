@@ -16,129 +16,119 @@ composer require goldfinch/fielder
 
 ## Usage
 
-Add `fielder` method to your DataObject/Page
+Fielder within the cms fields in `DataObject`
 
 ```php
 use SilverStripe\ORM\DataObject;
-use Goldfinch\Fielder\Traits\FielderTrait;
 
 MyAwesomeModel extends DataObject
 {
-    use FielderTrait;
-
-    public function fielder(Fielder $fielder): void
-    {
-        $fielder->remove('Content');
-
-        $fielder->required([
-            'FirstName',
-            'About',
-        ]);
-
-        $fielder->fields([
-            'Root.Main' => [
-                $fielder->string('FirstName', 'First name'),
-                $fielder->text('About'),
-                $fielder->html('Content'),
-            ],
-            'Root.Demo' => [
-                $fielder->string('Headline'),
-            ],
-        ]);
-    }
-}
-```
-
-Add `fielderSettings` method to your `SiteTree` page to manage settings fields (insetead of `getSettingsFields`)
-
-```php
-use SilverStripe\CMS\Model\SiteTree;
-use Goldfinch\Fielder\Traits\FielderTrait;
-
-MyAwesomePage extends SiteTree
-{
-    use FielderTrait;
-
-    public function fielderSettings(Fielder $fielder)
-    {
-        $fielder->remove('ShowInMenus');
-    }
-}
-```
-
-If for some reason you need to keep `getCMSFields` or `getSettingsFields` but want to use `fielder`, you can do that. Just don't use trait and declare both methods as shown below.
-
-```php
-use SilverStripe\CMS\Model\SiteTree;
-
-MyAwesomePage extends SiteTree
-{
-    public function fielder(Fielder $fielder): void
-    {
-        $fielder->remove('Content');
-
-        $fielder->required([
-            'FirstName',
-            'About',
-        ]);
-
-        $fielder->fields([
-            'Root.Main' => [
-                $fielder->string('FirstName', 'First name'),
-                $fielder->text('About'),
-                $fielder->html('Content'),
-            ],
-            'Root.Demo' => [
-                $fielder->string('Headline'),
-            ],
-        ]);
-    }
-
-    public function fielderSettings(Fielder $fielder)
-    {
-        $fielder->remove('ShowInMenus');
-    }
-
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
 
-        // .. $fields->addFieldsToTab()
+        $fielder = $fields->fielder($this);
 
-        return $this->fielderFields($fields)->getFields();
-    }
+        $fielder->remove('Content');
 
-    public function getSettingsFields()
-    {
-        $fields = parent::getSettingsFields();
+        $fielder->required([
+            'FirstName',
+            'About',
+        ]);
 
-        // .. $fields->removeByName()
+        $fielder->fields([
+            'Root.Main' => [
+                $fielder->string('FirstName', 'First name'),
+                $fielder->text('About'),
+                $fielder->html('Content'),
+            ],
+            'Root.Demo' => [
+                $fielder->string('Headline'),
+            ],
+        ]);
 
-        return $this->fielderSettingsFields($fields)->getFields();
+        return $fields;
     }
 }
 ```
 
-#### Available extends that can be triggered via extensions
+Fielder within the settings fields in `SiteTree`
 
 ```php
-use Goldfinch\Fielder\Fielder;
+use SilverStripe\CMS\Model\SiteTree;
 
-public function updateFielder(Fielder $fielder): void
+MyAwesomePage extends SiteTree
 {
-    // ..
+    public function getSettingsFields()
+    {
+        $fields = parent::getSettingsFields();
+
+        $fielder = $fields->fielder($this);
+        
+        $fielder->remove('ShowInMenus');
+
+        return $fields;
+    }
 }
-public function updateFielderSettings(Fielder $fielder): void
+```
+
+Fielder has its own validator method to ease validation process (see [validate method](https://github.com/goldfinch/fielder#list-of-available-methods)). Having said that the default SS validation method can still be presented and will be called alongside.
+
+```php
+use SilverStripe\ORM\DataObject;
+
+MyAwesomeModel extends DataObject
 {
-    // ..
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+
+        $fielder = $fields->fielder($this);
+        
+        // fielder validation
+        $fielder->validate([
+            'Email' => 'required|email'
+        ]);
+
+        return $fields;
+    }
+
+    // default SS validation
+    public function validate()
+    {
+        $result = parent::validate();
+
+        if ($this->Title != 'Home') {
+            $result->addError('Title is invalid');
+        }
+
+        return $result;
+    }
 }
-public function updateFielderCompositeValidator(Fielder $fielder)
+```
+
+Fielder in extension
+
+```php
+use SilverStripe\ORM\DataExtension;
+
+class MyExtension extends DataExtension
 {
-    // ..
-}
-public function updateFielderValidate(Fielder $fielder)
-{
-    // ..
+    public function updateCMSFields($fields)
+    {
+        $fielder = $fields->fielder($this);
+
+        $fielder->validate([
+            'Email' => 'required|email',
+        ]);
+    }
+
+    public function updateSettingsFields($fields)
+    {
+        $fielder = $fields->fielder($this);
+
+        $fielder->remove('ShowInMenus');
+    }
 }
 ```
 
