@@ -8,6 +8,7 @@ use SilverStripe\Forms\Tab;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\Assets\Image;
 use SilverStripe\Forms\TabSet;
+use SilverStripe\Core\Extension;
 use SilverStripe\Security\Group;
 use SilverStripe\Forms\DateField;
 use SilverStripe\Forms\FieldList;
@@ -117,11 +118,19 @@ class Fielder
 
     private $parent = null;
 
+    private $extension = null;
+
     public function __construct($fields, $parent)
     {
+        if (is_subclass_of($parent, Extension::class)) {
+            $this->extension = $parent;
+            $this->parent = $parent->getOwner();
+        } else {
+            $this->parent = $parent;
+        }
+
         $this->fields = $fields;
         $this->initialFields = clone $this->fields;
-        $this->parent = $parent;
     }
 
     public function removeFieldsInTab($tabname)
@@ -1345,6 +1354,11 @@ class Fielder
     ) {
         $this->existenceCheck($relationName . 'ID');
 
+        // TODO: causing errors without this check, return null field instead (happens after dev/build only once)
+        if (!$this->parent->ID) {
+            return $this->literal('null', '');
+        }
+
         return HasOneButtonField::create(
             $this->parent,
             $relationName,
@@ -2104,7 +2118,9 @@ class Fielder
 
     private function isDBType($name, $type)
     {
-        return get_class($this->parent->dbObject($name)) == $type;
+        $object = $this->parent->dbObject($name);
+
+        return $object && get_class($this->parent->dbObject($name)) == $type;
     }
 
     private function returnTypeError($name, $type)
