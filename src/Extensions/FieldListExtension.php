@@ -9,13 +9,11 @@ use SilverStripe\Forms\FieldList;
 class FieldListExtension extends Extension
 {
     protected $fielder;
+
     // protected $fielderType;
 
     public function fielder($parent)
     {
-        // getSettingsFields
-        // updateSettingsFields
-
         if ($this->fielder) {
             return $this->fielder;
         }
@@ -35,13 +33,13 @@ class FieldListExtension extends Extension
         return $this->fielder;
     }
 
-    // public function getFielderType()
-    // {
-    //     return $this->fielderType;
-    // }
-
     public function getFielder()
     {
         return $this->fielder;
     }
+
+    // public function getFielderType()
+    // {
+    //     return $this->fielderType;
+    // }
 }

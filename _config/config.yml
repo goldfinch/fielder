@@ -1,6 +1,6 @@
 ---
 Name: goldfinch-fielder
-After: '#coreextensions'
+After: "#coreextensions"
 ---
 
 SilverStripe\Forms\FieldList:
