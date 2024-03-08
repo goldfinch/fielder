@@ -9,27 +9,39 @@ use SilverStripe\Versioned\ChangeSetItem;
 
 class FielderExtension extends DataExtension
 {
+    public $fieldsWithFielder;
+
+    public function intFielder($fields)
+    {
+        $fields->fielder($this->owner);
+
+        $this->fieldsWithFielder = $fields;
+    }
+
     public function validate($result)
     {
-        $fielder = $this->owner->getCMSFields()->getFielder();
+        if ($this->fieldsWithFielder) {
 
-        if (!$fielder && method_exists($this->owner, 'getSettingsFields')) {
-            $fielder = $this->owner->getSettingsFields()->getFielder();
-        }
+            $fielder = $this->owner->getCMSFields()->getFielder();
 
-        if ($fielder && $fielder->getError()) {
-            $result->addError($fielder->getError());
-        }
+            if (!$fielder && method_exists($this->owner, 'getSettingsFields')) {
+                $fielder = $this->owner->getSettingsFields()->getFielder();
+            }
 
-        if (
-            $fielder &&
-            $this->owner->isChanged() &&
-            !in_array(get_class($this->owner), [
-                ChangeSetItem::class,
-                ChangeSet::class,
-            ])
-        ) {
-            return Validator::create($this, $result)->validate();
+            if ($fielder && $fielder->getError()) {
+                $result->addError($fielder->getError());
+            }
+
+            if (
+                $fielder &&
+                $this->owner->isChanged() &&
+                !in_array(get_class($this->owner), [
+                    ChangeSetItem::class,
+                    ChangeSet::class,
+                ])
+            ) {
+                Validator::create($this, $result)->validate();
+            }
         }
     }
 }

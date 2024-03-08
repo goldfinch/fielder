@@ -27,7 +27,7 @@ MyAwesomeModel extends DataObject
     {
         $fields = parent::getCMSFields();
 
-        $fielder = $fields->fielder($this);
+        $fielder = $this->intFielder($fields)->getFielder();
 
         $fielder->remove('Content');
 
@@ -63,7 +63,7 @@ MyAwesomePage extends SiteTree
     {
         $fields = parent::getSettingsFields();
 
-        $fielder = $fields->fielder($this);
+        $fielder = $this->intFielder($fields)->getFielder();
         
         $fielder->remove('ShowInMenus');
 
@@ -83,7 +83,7 @@ MyAwesomeModel extends DataObject
     {
         $fields = parent::getCMSFields();
 
-        $fielder = $fields->fielder($this);
+        $fielder = $this->intFielder($fields)->getFielder();
         
         // fielder validation
         $fielder->validate([
@@ -116,7 +116,7 @@ class MyExtension extends DataExtension
 {
     public function updateCMSFields($fields)
     {
-        $fielder = $fields->fielder($this);
+        $fielder = $this->owner->intFielder($fields)->getFielder();
 
         $fielder->validate([
             'Email' => 'required|email',
@@ -125,7 +125,7 @@ class MyExtension extends DataExtension
 
     public function updateSettingsFields($fields)
     {
-        $fielder = $fields->fielder($this);
+        $fielder = $this->owner->intFielder($fields)->getFielder();
 
         $fielder->remove('ShowInMenus');
     }
