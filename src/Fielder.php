@@ -120,6 +120,11 @@ class Fielder
 
     private $extension = null;
 
+    public function getParentObject()
+    {
+        return $this->parent;
+    }
+
     public function __construct($fields, $parent)
     {
         if (is_subclass_of($parent, Extension::class)) {
@@ -366,6 +371,7 @@ class Fielder
 
     public function validate($rules)
     {
+        // dump(array_merge($this->validatorRules, $rules));
         $this->validatorRules = array_merge($this->validatorRules, $rules);
     }
 
@@ -2075,7 +2081,7 @@ class Fielder
 
         $this->existenceCheck($name);
 
-        $field = new DBPhone($name, $options);
+        $field = DBPhone::create($name, $options);
         return $field->scaffoldFormField($title);
     }
 

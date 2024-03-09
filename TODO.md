@@ -1,5 +1,6 @@
 TODO:
 
+- internal field validation (like email field - email rule)
 - fields reorder?
 - Image_ImageEditor
 - merge required fields (with extension)
