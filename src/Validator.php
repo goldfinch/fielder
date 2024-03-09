@@ -3,11 +3,7 @@
 namespace Goldfinch\Fielder;
 
 use Closure;
-use SilverStripe\Core\Extension;
-use SilverStripe\Versioned\ChangeSet;
 use SilverStripe\ORM\ValidationResult;
-use SilverStripe\Versioned\ChangeSetItem;
-use SilverStripe\ORM\FieldType\DBHTMLText;
 use Goldfinch\Illuminate\Validator as IlluminateValidator;
 
 class Validator
@@ -55,8 +51,6 @@ class Validator
                 self::addError($field, $str);
             }
         }
-
-        // return $result;
     }
 
     public static function addError($field, $str)
@@ -66,24 +60,32 @@ class Validator
 
     public static function validateClosure($rules)
     {
-        foreach ($rules as $field => $closure) {
+        $result = ValidationResult::create();
 
-            // $value = $parent->$field;
-            // $labels = $parent->fieldLabels();
-            // $fail = function($str) use ($field, $result, $labels) {
+        foreach ($rules as $field => $closures) {
 
-            //     if (isset($labels[$field])) {
-            //         $field = $labels[$field];
-            //     }
+            foreach ($closures as $closure) {
 
-            //     $str = str_replace(':attribute', '<strong>'.$field.'</strong>', $str);
-            //     $strHTML = DBHTMLText::create();
-            //     $result->addError($strHTML->setValue($str));
-            // };
-            // $closure->call($parent, $value, $fail);
+                $value = self::$data[$field];
+                $label = self::$fielder->dataField($field)->Title();
+
+                $fail = function($str) use ($field, $result, $label) {
+
+                    $str = str_replace(':attribute', '<strong>'.$label.'</strong>', $str);
+                    $result->addFieldError($field, $str);
+                };
+
+                $closure->call($result, $value, $fail);
+            }
         }
 
-        // return $result;
+        $errors = $result->getMessages();
+
+        if (count($errors)) {
+            foreach ($errors as $error) {
+                self::addError($error['fieldName'], $error['message']);
+            }
+        }
     }
 
     public static function validate()
@@ -94,12 +96,14 @@ class Validator
         $closureRules = [];
         $commonRules = [];
 
-        foreach ($fielder->getValidatorRules() as $field => $rule) {
+        foreach ($fielder->getValidatorRules() as $field => $rules) {
 
-            if ($rule instanceof Closure) {
-                $closureRules[$field] = $rule;
-            } else {
-                $commonRules[$field] = $rule;
+            foreach ($rules as $rule) {
+                if ($rule instanceof Closure) {
+                    $closureRules[$field][] = $rule;
+                } else {
+                    $commonRules[$field][] = $rule;
+                }
             }
         }
 

@@ -33,8 +33,9 @@ class FielderValidator extends SSValidator
 
                         foreach ($results['errors'] as $field => $errors) {
                             foreach ($errors as $error) {
-                                $this->result->addFieldError($field, $error);
-                                // $this->validationError($field, $error, 'required');
+                                $this->result->addFieldError($field, $error, 'error', null, 'html');
+
+                                // .. all messages examples are below
                             }
                         }
                     }
@@ -51,8 +52,18 @@ class FielderValidator extends SSValidator
 
                     foreach ($results['errors'] as $field => $errors) {
                         foreach ($errors as $error) {
-                            $this->result->addFieldError($field, $error);
+                            $this->result->addFieldError($field, $error, 'error', null, 'html');
+                            // $this->result->addFieldError($field, $error, 'good', null, 'html');
+                            // $this->result->addFieldError($field, $error, 'info', null, 'html');
+                            // $this->result->addFieldError($field, $error, 'warning', null, 'html');
+
+                            // $this->result->addError('custom error', 'warning');
+                            // $this->result->addMessage('custom message', 'good');
+
                             // $this->validationError($field, $error, 'required');
+                            // $this->validationError($field, $error, 'validation');
+                            // $this->validationError($field, $error, 'message');
+                            // $this->validationError($field, $error, 'bad');
                         }
                     }
                 }
