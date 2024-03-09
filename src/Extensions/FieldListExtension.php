@@ -48,32 +48,32 @@ class FieldListExtension extends Extension
         }
     }
 
-    public function fielder($parent)
-    {
+    // public function fielder($parent)
+    // {
 
-        if ($this->fielder) {
-            return $this->fielder;
-        }
+    //     if ($this->fielder) {
+    //         return $this->fielder;
+    //     }
 
 
-        $this->fielder = new Fielder($this->owner, $parent);
+    //     $this->fielder = new Fielder($this->owner, $parent);
 
-        return $this->fielder;
+    //     return $this->fielder;
 
-        // // $this->fielderType = debug_backtrace()[4]['function'];
+    //     // // $this->fielderType = debug_backtrace()[4]['function'];
 
-        // if (get_class($this) == FieldList::class) {
-        //     $fieldList = $this;
-        // } else if ($this->owner && get_class($this->owner) == FieldList::class) {
-        //     $fieldList = $this->owner;
-        // }
+    //     // if (get_class($this) == FieldList::class) {
+    //     //     $fieldList = $this;
+    //     // } else if ($this->owner && get_class($this->owner) == FieldList::class) {
+    //     //     $fieldList = $this->owner;
+    //     // }
 
-        // if (isset($fieldList)) {
-        //     $this->fielder = new Fielder($fieldList, $parent);
-        // }
+    //     // if (isset($fieldList)) {
+    //     //     $this->fielder = new Fielder($fieldList, $parent);
+    //     // }
 
-        // return $this->fielder;
-    }
+    //     // return $this->fielder;
+    // }
 
     public function getFielder()
     {
@@ -96,10 +96,10 @@ class FieldListExtension extends Extension
         }
     }
 
-    public function setFielder()
-    {
-        return $this->fielder;
-    }
+    // public function setFielder()
+    // {
+    //     return $this->fielder;
+    // }
 
     // public function getFielderType()
     // {
