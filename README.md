@@ -1212,6 +1212,8 @@ Class: `SilverStripe\AnyField\Form\AnyField`
 Suitable relationship: `has_one`
 Relationship type: `SilverStripe\LinkField\Models\Link::class`
 
+Template: `vendor/silverstripe/linkfield/templates/SilverStripe/LinkField/Models/Link.ss`
+
 ```php
 $fielder->inlineLink($name, $title = null, $value = null)
 ```
@@ -1491,6 +1493,14 @@ $Phone.National
 $Phone.E164
 $Phone.RFC3966
 $Phone.URL
+```
+
+```html
+<% if Phone %>
+<% with Phone %>
+<a href="$URL" title="$International">$National</a>
+<% end_with %>
+<% end_if %>
 ```
 
 #### mediaSelect
