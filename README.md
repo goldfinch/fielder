@@ -229,7 +229,11 @@ $fielder->readonly(['Title', 'Text'], false); // take off readonly
 
 > add custom error
 ```php
-$fielder->addError('Error message');
+$fielder->addError('Error message'); // error | required | bad | validation
+$fielder->addError('Error message', 'info');
+$fielder->addError('Error message', 'warning');
+$fielder->addError('Error message', 'message');
+$fielder->addError('<strong>Error</strong> message', 'good', null, 'html');
 ```
 
 > validate fields

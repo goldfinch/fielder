@@ -49,6 +49,7 @@ use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\SelectionGroup;
 use SilverStripe\ORM\FieldType\DBEnum;
 use SilverStripe\ORM\FieldType\DBYear;
+use SilverStripe\ORM\ValidationResult;
 use SilverStripe\ORM\FieldType\DBFloat;
 use Goldfinch\IconField\Forms\IconField;
 use SilverStripe\AnyField\Form\AnyField;
@@ -109,8 +110,6 @@ class Fielder
     private $initialFields = null;
 
     private $allFieldsRemoved = false;
-
-    private $requiredFields = [];
 
     private $validatorRules = [];
 
@@ -369,10 +368,29 @@ class Fielder
         }
     }
 
-    public function validate($rules)
+    public function validate($rules): void
     {
-        // dump(array_merge($this->validatorRules, $rules));
-        $this->validatorRules = array_merge($this->validatorRules, $rules);
+        $this->setValidatorRules($rules);
+    }
+
+    public function setValidatorRules($rules)
+    {
+        foreach ($rules as $field => $rule)
+        {
+            if (!isset($this->validatorRules[$field])) {
+                $this->validatorRules[$field] = [];
+            }
+
+            if (is_array($rule)) {
+                $this->validatorRules[$field] = array_merge($this->validatorRules[$field], $rule);
+            } else {
+                $exRule = explode('|', $rule);
+
+                foreach ($exRule as $exr) {
+                    $this->validatorRules[$field] = array_merge($this->validatorRules[$field], [$exr]);
+                }
+            }
+        }
     }
 
     public function getValidatorRules()
@@ -387,17 +405,33 @@ class Fielder
 
     public function setRequireFields($fields)
     {
-        $this->requiredFields = is_array($fields) ? $fields : [$fields];
+        $requiredFields = is_array($fields) ? $fields : [$fields];
+        $ra = [];
+
+        foreach ($requiredFields as $rf) {
+
+            $ra[$rf] = 'required';
+        }
+
+        $this->setValidatorRules($ra);
     }
 
     public function getRequireFields()
     {
-        return $this->requiredFields;
+        $rules = [];
+
+        foreach ($this->getValidatorRules() as $field => $r) {
+            if (in_array('required', $r)) {
+                $rules[] = $field;
+            }
+        }
+
+        return $rules;
     }
 
-    public function addError($error)
+    public function addError($message, $messageType = ValidationResult::TYPE_ERROR, $code = null, $cast = ValidationResult::CAST_TEXT)
     {
-        $this->error = $error;
+        $this->error = [$message, $messageType, $code, $cast];
     }
 
     public function getError()
