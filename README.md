@@ -156,6 +156,39 @@ $fielder->freshFields([
 ])
 ```
 
+> insert after
+```php
+$fielder->insertAfter('MenuTitle', $fielder->string('Title'));
+
+$fielder->insertAfter('MenuTitle', [
+    $fielder->string('Title'),
+    $fielder->text('Content'),
+]);
+```
+
+> insert before
+```php
+$fielder->insertBefore('MenuTitle', $fielder->string('Title'));
+
+$fielder->insertBefore('MenuTitle', [
+    $fielder->string('Title'),
+    $fielder->text('Content'),
+]);
+```
+
+> reorder fields
+```php
+$fielder->reorder(['Content', 'MenuTitle']);
+```
+
+> add fields to tab
+```php
+$fielder->toTab('Root.Demo', [
+    $fielder->string('Title'),
+    $fielder->text('Content'),
+]);
+```
+
 > get data field, same as `dataFieldByName`
 ```php
 $fielder->dataField('Title');
@@ -281,6 +314,37 @@ $fielder->validate([
 ]);
 ```
 
+> display logic methods
+
+**Basic coverage, not all functions are yet available.**
+
+```php
+$fielder->displayIf();
+$fielder->displayUnless();
+$fielder->hideIf();
+$fielder->hideUnless();
+```
+
+examples:
+
+```php
+$fielder->toTab('Root.Demo', [
+    $fielder->checkbox('ConditionalField'),
+    $fielder->displayIf('ConditionalField', [ // isChecked
+    // $fielder->displayIf('!Magic', [ // isNotChecked
+    // $fielder->displayIf(['MagicString', '==', null], [ // isEmpty
+    // $fielder->displayIf(['MagicString', '!=', null], [ // isNotEmpty
+    // $fielder->displayIf(['MagicString', '==', 3], [ // isEqualTo
+    // $fielder->displayIf(['MagicString', '!=', 3], [ // isNotEqualTo
+    // $fielder->displayIf(['MagicString', '>', 3], [ // isGreaterThan
+    // $fielder->displayIf(['MagicString', '<', 3], [ // isLessThan
+        $fielder->string('Field1'),
+        $fielder->string('Field2'),
+        $fielder->string('Field3'),
+    ])
+]);
+```
+
 ## List of available fields
 
 ### ✳️ General fields
@@ -295,6 +359,9 @@ Suitable DB Type: `Boolean`
 
 ```php
 $fielder->checkbox($name, $title = null, $value = null)
+
+// left aligned checkbox (wrapped in composite field)
+$fielder->lineCheckbox($name, $title = null, $value = null)
 ```
 
 #### dropdown

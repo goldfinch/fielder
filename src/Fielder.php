@@ -2,6 +2,7 @@
 
 namespace Goldfinch\Fielder;
 
+use Exception;
 use Goldfinch\Fielder\Grid;
 use Illuminate\Support\Arr;
 use SilverStripe\Forms\Tab;
@@ -60,6 +61,7 @@ use SilverStripe\ORM\FieldType\DBLocale;
 use SilverStripe\Forms\HTMLReadonlyField;
 use SilverStripe\Forms\SingleLookupField;
 use SilverStripe\Forms\TreeDropdownField;
+use SilverStripe\ORM\FieldType\DBBoolean;
 use SilverStripe\ORM\FieldType\DBDecimal;
 use SilverStripe\TagField\StringTagField;
 use Goldfinch\GoogleFields\Forms\MapField;
@@ -235,6 +237,145 @@ class Fielder
         }
 
         return $this->fields;
+    }
+
+    public function insertAfter($target, $field)
+    {
+        if (is_array($field)) {
+            foreach (array_reverse($field) as $f) {
+                $this->fields->insertAfter($target, $f);
+            }
+        } else {
+            $this->fields->insertAfter($target, $field);
+        }
+    }
+
+    public function insertBefore($target, $field)
+    {
+        if (is_array($field)) {
+            foreach ($field as $f) {
+                $this->fields->insertBefore($target, $f);
+            }
+        } else {
+            $this->fields->insertBefore($target, $field);
+        }
+    }
+
+    public function reorder($fields)
+    {
+        $this->fields->changeFieldOrder($fields);
+    }
+
+    public function toTab($tab, $fields)
+    {
+        $this->fields([$tab => $fields]);
+    }
+
+    /*
+        Covered:
+
+        + isEqualTo
+        + isNotEqualTo
+        + isGreaterThan
+        + isLessThan
+        - contains
+        - startsWith
+        - endsWith
+        + isEmpty
+        + isNotEmpty
+        - isBetween
+        + isChecked
+        + isNotChecked()
+        - hasCheckedOption
+        - hasCheckedAtLeast
+        - hasCheckedLessThan
+
+        ||
+        &&
+    */
+    private function displayLogic($fn, $condition, $fields)
+    {
+        if (is_array($condition)) {
+
+            if (count($condition) == 3) {
+                list($target, $operator, $target2) = $condition;
+
+                $empty = false;
+
+                if ($target2 === null) {
+                    $empty = true;
+                }
+
+                if ($operator == '==') {
+                    if ($empty) {
+                        return $this->wrapper(...$fields)->$fn($target)->isEmpty()->end();
+                    } else {
+                        return $this->wrapper(...$fields)->$fn($target)->isEqualTo($target2)->end();
+                    }
+                } else if ($operator == '!=') {
+
+                    if ($empty) {
+                        return $this->wrapper(...$fields)->$fn($target)->isNotEmpty()->end();
+                    } else {
+                        return $this->wrapper(...$fields)->$fn($target)->isNotEqualTo($target2)->end();
+                    }
+                } else if ($operator == '>') {
+                    return $this->wrapper(...$fields)->$fn($target)->isGreaterThan($target2)->end();
+                } else if ($operator == '<') {
+                    return $this->wrapper(...$fields)->$fn($target)->isLessThan($target2)->end();
+                }
+            } else {
+                throw new Exception($fn . ' should contain three parameters');
+            }
+        } else {
+
+            $excl = false;
+
+            if ($condition[0] == '!') {
+                $excl = true;
+                $condition = substr($condition, 1);
+            }
+
+            if (strpos($condition, '||') !== false) {
+                // TODO
+            }
+
+            if (strpos($condition, '&&') !== false) {
+                // TODO
+            }
+
+            $db = $this->parent->dbObject($condition);
+
+            if (get_class($db) == DBBoolean::class) {
+                if ($excl) {
+                    return $this->wrapper(...$fields)->$fn($condition)->isNotChecked()->end();
+                } else {
+                    return $this->wrapper(...$fields)->$fn($condition)->isChecked()->end();
+                }
+            } else {
+                //
+            }
+        }
+    }
+
+    public function displayIf($condition, $fields)
+    {
+        return $this->displayLogic(__FUNCTION__, $condition, $fields);
+    }
+
+    public function displayUnless($condition, $fields)
+    {
+        return $this->displayLogic(__FUNCTION__, $condition, $fields);
+    }
+
+    public function hideIf($condition, $fields)
+    {
+        return $this->displayLogic(__FUNCTION__, $condition, $fields);
+    }
+
+    public function hideUnless($condition, $fields)
+    {
+        return $this->displayLogic(__FUNCTION__, $condition, $fields);
     }
 
     public function freshFields($fieldsList)
@@ -525,6 +666,11 @@ class Fielder
         $this->existenceCheck($name);
 
         return CheckboxField::create($name, $title, $value);
+    }
+
+    public function lineCheckbox(...$args)
+    {
+        return $this->composite($this->checkbox(...$args));
     }
 
     /**
