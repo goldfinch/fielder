@@ -755,6 +755,9 @@ class Fielder
 
     public function lineCheckbox(...$args)
     {
+        // need here to remove an empty composite div in updated form template after publishing record
+        $this->remove($args[0] . 'Group');
+
         return $this->composite($this->checkbox(...$args));
     }
 
