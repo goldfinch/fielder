@@ -310,14 +310,58 @@ class Fielder
                     if ($empty) {
                         return $this->wrapper(...$fields)->$fn($target)->isEmpty()->end();
                     } else {
-                        return $this->wrapper(...$fields)->$fn($target)->isEqualTo($target2)->end();
+
+                        $c = $this->wrapper(...$fields)->$fn($target);
+
+                        if (is_array($target2)) {
+                            // multi
+                            $started = 0;
+
+                            foreach ($target2 as $e) {
+
+                                if ($started) {
+                                    $c = $c->isEqualTo($e);
+                                } else {
+                                    $c = $c->orIf($target)->isEqualTo($e);
+
+                                    $started = 1;
+                                }
+                            }
+
+                            return $c->end();
+
+                        } else {
+                            return $c->isEqualTo($target2)->end();
+                        }
                     }
                 } else if ($operator == '!=') {
 
                     if ($empty) {
                         return $this->wrapper(...$fields)->$fn($target)->isNotEmpty()->end();
                     } else {
-                        return $this->wrapper(...$fields)->$fn($target)->isNotEqualTo($target2)->end();
+
+                        $c = $this->wrapper(...$fields)->$fn($target);
+
+                        if (is_array($target2)) {
+                            // multi
+                            $started = 0;
+
+                            foreach ($target2 as $e) {
+
+                                if ($started) {
+                                    $c = $c->isNotEqualTo($e);
+                                } else {
+                                    $c = $c->orIf($target)->isNotEqualTo($e);
+
+                                    $started = 1;
+                                }
+                            }
+
+                            return $c->end();
+
+                        } else {
+                            return $c->isNotEqualTo($target2)->end();
+                        }
                     }
                 } else if ($operator == '>') {
                     return $this->wrapper(...$fields)->$fn($target)->isGreaterThan($target2)->end();
