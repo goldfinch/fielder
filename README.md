@@ -6,7 +6,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/goldfinch/fielder.svg?labelColor=333&color=F8C630&label=Downloads)](https://packagist.org/packages/goldfinch/fielder)
 [![License](https://img.shields.io/packagist/l/goldfinch/fielder.svg?labelColor=333&color=F8C630&label=License)](https://packagist.org/packages/goldfinch/fielder) 
 
-Fielder 🚜 is fields manager and organizer that helps to simplify fields declaration and makes it easy to manage all in one place, keeping it clean with less code.
+Fielder 🚜 is fields organizer that helps to simplify fields declaration and makes it easy to manage all in one place, keeping it clean with less code.
 
 ## Install
 

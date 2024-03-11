@@ -570,7 +570,7 @@ class Fielder
         return $rules;
     }
 
-    public function addError($message, $messageType = ValidationResult::TYPE_ERROR, $code = null, $cast = ValidationResult::CAST_TEXT)
+    public function addError($message, $messageType = ValidationResult::TYPE_ERROR, $code = null, $cast = ValidationResult::CAST_HTML)
     {
         $this->error = [$message, $messageType, $code, $cast];
     }
