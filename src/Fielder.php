@@ -107,6 +107,20 @@ use Dynamic\CountryDropdownField\Fields\CountryDropdownField;
 
 class Fielder
 {
+    /**
+        TODO fields:
+
+        - DBClassName
+        - Foreignkey
+        - HTMLFragment
+        - HTMLVarchar
+        - MultiEnum
+        - PolymorphicForeignKey
+        - PrimaryKey
+        - Text
+        - Varchar
+     */
+
     private $fields = null;
 
     private $initialFields = null;
@@ -145,7 +159,18 @@ class Fielder
 
         if ($tab) {
             foreach ($tab->getChildren() as $field) {
-                $this->remove($field->getName());
+
+                if ($this->parent->dbObject($field->getName())) {
+                    $this->remove($field->getName());
+                } else {
+                    // var_dump(get_class($field), $field->getName(), is_subclass_of($field, CompositeField::class));
+                    if (is_subclass_of($field, CompositeField::class) && !$this->dataField($field->getName())) {
+
+                        $this->remove($field->getName());
+                    } else {
+                        // var_dump($field->getName(), get_class($field));
+                    }
+                }
             }
         }
     }
@@ -1532,7 +1557,7 @@ class Fielder
      * DB Type: Enum("Apple,Orange,Kiwi", "Kiwi")
      * Available methods:
      */
-    public function enum($name)
+    public function enum($name, $title = null)
     {
         if (!$this->isDBType($name, DBEnum::class)) {
             return $this->returnTypeError($name, 'enum');
@@ -1546,7 +1571,13 @@ class Fielder
 
         $this->existenceCheck($name);
 
-        return $this->field($name);
+        $field = $this->field($name);
+
+        if ($title) {
+            $field->setTitle($title);
+        }
+
+         return $field;
     }
 
     // public function htmlText($name)
