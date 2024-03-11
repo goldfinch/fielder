@@ -351,7 +351,7 @@ class Fielder
                                 if ($started) {
                                     $c = $c->isNotEqualTo($e);
                                 } else {
-                                    $c = $c->orIf($target)->isNotEqualTo($e);
+                                    $c = $c->andIf($target)->isNotEqualTo($e);
 
                                     $started = 1;
                                 }

@@ -335,7 +335,9 @@ $fielder->toTab('Root.Demo', [
     // $fielder->displayIf(['MagicString', '==', null], [ // isEmpty
     // $fielder->displayIf(['MagicString', '!=', null], [ // isNotEmpty
     // $fielder->displayIf(['MagicString', '==', 3], [ // isEqualTo
+    // $fielder->displayIf(['MagicString', '==', [2,3]], [ // isEqualTo
     // $fielder->displayIf(['MagicString', '!=', 3], [ // isNotEqualTo
+    // $fielder->displayIf(['MagicString', '!=', [2,3]], [ // isNotEqualTo
     // $fielder->displayIf(['MagicString', '>', 3], [ // isGreaterThan
     // $fielder->displayIf(['MagicString', '<', 3], [ // isLessThan
         $fielder->string('Field1'),
