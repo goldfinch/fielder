@@ -181,6 +181,14 @@ $fielder->insertBefore('MenuTitle', [
 $fielder->reorder(['Content', 'MenuTitle']);
 ```
 
+> reorder tabs
+```php
+$fielder->reorderTabs([
+    'Root.Demo',
+    'Root.Main'
+]);
+```
+
 > add fields to tab
 ```php
 $fielder->toTab('Root.Demo', [
@@ -230,6 +238,8 @@ $fielder->removeAllCurrent();
 > remove fields in tab
 ```php
 $fielder->removeFieldsInTab('Root.Main');
+// same as
+$fielder->clearTab('Root.Main');
 ```
 
 > add description field

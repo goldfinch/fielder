@@ -153,6 +153,11 @@ class Fielder
         $this->initialFields = clone $this->fields;
     }
 
+    public function clearTab($tabname)
+    {
+        $this->removeFieldsInTab($tabname);
+    }
+
     public function removeFieldsInTab($tabname)
     {
         $tab = $this->findTab($tabname);
@@ -163,17 +168,44 @@ class Fielder
                 if ($this->parent->dbObject($field->getName())) {
                     $this->remove($field->getName());
                 } else {
-                    // var_dump(get_class($field), $field->getName(), is_subclass_of($field, CompositeField::class));
-                    if (is_subclass_of($field, CompositeField::class) && !$this->dataField($field->getName())) {
+
+                    if ((get_class($field) == CompositeField::class || is_subclass_of($field, CompositeField::class)) && !$this->dataField($field->getName())) {
 
                         $this->remove($field->getName());
                     } else {
-                        // var_dump($field->getName(), get_class($field));
+                        if (get_class($field) == UploadField::class) {
+                            $this->remove($field->getName());
+                        }
                     }
                 }
             }
         }
     }
+
+    // public function removeAllInTab($tab)
+    // {
+    //     $fltFields = $this->fields
+    //         ->findTab($tab)
+    //         ->getChildren()
+    //         ->flattenFields();
+
+    //     // Escpe some sensitive fields for BaseElement
+    //     if (
+    //         is_subclass_of($this->getParent()->getOwner(), BaseElement::class)
+    //     ) {
+    //         $array = array_flip(array_keys($fltFields->map()->toArray()));
+    //         unset($array['Version']);
+    //         unset($array['AvailableGlobally']);
+    //         unset($array['VirtualLookupTitle']);
+    //         unset($array['TopPageID']);
+    //         unset($array['AbsoluteLink']);
+    //         unset($array['LiveLink']);
+    //         unset($array['StageLink']);
+    //         $array = array_flip($array);
+
+    //         $this->remove($array);
+    //     }
+    // }
 
     public function disable($fieldNameOrFields, $state = true)
     {
@@ -289,6 +321,16 @@ class Fielder
     public function reorder($fields)
     {
         $this->fields->changeFieldOrder($fields);
+    }
+
+    public function reorderTabs($tabs)
+    {
+        foreach ($tabs as $tab) {
+            $tabEx = explode('.', $tab);
+            $tabInst = $this->fields->fieldByName($tab);
+            $this->fields->removeFieldFromTab($tabEx[0], $tabEx[1]);
+            $this->fields->fieldByName($tabEx[0])->push($tabInst);
+        }
     }
 
     public function toTab($tab, $fields)
@@ -549,32 +591,6 @@ class Fielder
             if (strtolower($f) == 'focuspoint') {
                 $this->remove(ucfirst(strtolower($k)));
             }
-        }
-    }
-
-    // TODO
-    public function removeAllInTab($tab)
-    {
-        $fltFields = $this->fields
-            ->findTab($tab)
-            ->getChildren()
-            ->flattenFields();
-
-        // Escpe some sensitive fields for BaseElement
-        if (
-            is_subclass_of($this->getParent()->getOwner(), BaseElement::class)
-        ) {
-            $array = array_flip(array_keys($fltFields->map()->toArray()));
-            unset($array['Version']);
-            unset($array['AvailableGlobally']);
-            unset($array['VirtualLookupTitle']);
-            unset($array['TopPageID']);
-            unset($array['AbsoluteLink']);
-            unset($array['LiveLink']);
-            unset($array['StageLink']);
-            $array = array_flip($array);
-
-            $this->remove($array);
         }
     }
 
