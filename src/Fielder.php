@@ -2,6 +2,7 @@
 
 namespace Goldfinch\Fielder;
 
+use Closure;
 use Exception;
 use Goldfinch\Fielder\Grid;
 use Illuminate\Support\Arr;
@@ -90,6 +91,7 @@ use SilverStripe\VersionedAdmin\Forms\DiffField;
 use Goldfinch\ImageEditor\Forms\ImageCoordsField;
 use Heyday\ColorPalette\Fields\ColorPaletteField;
 use SilverStripe\Forms\GridField\GridFieldConfig;
+use Goldfinch\Shortcode\ORM\FieldType\DBSCVarchar;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use SilverStripe\CMS\Forms\SiteTreeURLSegmentField;
 use Goldfinch\ImageEditor\Forms\EditableUploadField;
@@ -609,6 +611,12 @@ class Fielder
 
             if (is_array($rule)) {
                 $this->validatorRules[$field] = array_merge($this->validatorRules[$field], $rule);
+            } else if (is_object($rule) && get_class($rule) == Closure::class) {
+                if (!isset($this->validatorRules[$field])) {
+                    $this->validatorRules[$field] = [];
+                }
+
+                $this->validatorRules[$field] = array_merge($this->validatorRules[$field], [$rule]);
             } else {
                 $exRule = explode('|', $rule);
 
@@ -794,6 +802,14 @@ class Fielder
         $this->existenceCheck($name);
 
         return TextareaField::create($name, $title, $value);
+    }
+
+    /**
+     * DB Type: SCVarchar
+     */
+    public function shortcode($name, $title = null)
+    {
+        return $this->field($name, $title);
     }
 
     /**

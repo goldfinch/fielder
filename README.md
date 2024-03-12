@@ -1006,6 +1006,20 @@ $fielder->htmlReadonly($name, $title = null, $value = null)
 
 ### ✳️ External fields
 
+#### shortcode
+
+```bash
+composer require goldfinch/shortcode
+```
+
+> Shortcode field (string)
+
+Suitable DB Type: `SCVarchar`
+
+```php
+$fielder->shortcode($name, $title = null)
+```
+
 #### objectLink
 
 ```bash
