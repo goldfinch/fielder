@@ -55,7 +55,7 @@ class FielderValidator extends SSValidator
 
                         foreach ($results['errors'] as $field => $errors) {
                             foreach ($errors as $error) {
-                                $this->result->addFieldError($field, $error, 'error', null, 'html');
+                                $this->result->addFieldError($field, '<span style="display: block">'.$error.'</span>', 'error', null, 'html');
                             }
                         }
                     }
