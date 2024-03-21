@@ -2,12 +2,15 @@
 
 namespace Goldfinch\Fielder;
 
+use League\Uri\Components\Component;
 use Unisolutions\GridField\CopyButton;
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridState;
 use SilverStripe\Forms\GridField\GridFieldFooter;
 use SilverStripe\Forms\GridField\GridFieldButtonRow;
 use SilverStripe\Forms\GridField\GridFieldPageCount;
 use SilverStripe\Forms\GridField\GridFieldPaginator;
+use SilverStripe\Forms\GridField\GridState_Component;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldEditButton;
 use SilverStripe\Forms\GridField\GridFieldLazyLoader;
@@ -35,6 +38,7 @@ use Symbiote\GridFieldExtensions\GridFieldConfigurablePaginator;
 use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use Goldfinch\ImageEditor\Forms\GridField\GridFieldManyManyFocusConfig;
+use SilverStripe\Versioned\VersionedGridFieldState\VersionedGridFieldState;
 
 class Grid
 {
@@ -86,12 +90,36 @@ class Grid
         'many-many-focus' => GridFieldManyManyFocusConfig::class,
 
         'default' => [
-            'detail-form',
-            'action-menu',
+            'toolbar-header',
+            'button-row',
+            'sortable-header',
+            'filter-header',
+            'data-columns',
+            'page-count',
+            'paginator',
+        ],
+
+        'basic' => [
             'add',
-            'edit',
-            'copy',
+            'toolbar-header',
+            'data-columns',
+            'detail-form',
             'delete',
+            'edit',
+            'action-menu',
+            'copy',
+        ],
+
+        'basic-sort' => [
+            'add',
+            'toolbar-header',
+            'data-columns',
+            'detail-form',
+            'delete',
+            'edit',
+            'action-menu',
+            'copy',
+            'orderable-rows' => 'SortOrder',
         ],
     ];
 
@@ -129,6 +157,17 @@ class Grid
 
     public function config($config)
     {
+        // // remove existing components first
+        // $cfg = $this->grid->getConfig();
+
+        // foreach ($cfg->getComponents() as $c) {
+
+        //     if (get_class($c) != VersionedGridFieldState::class && get_class($c) != GridState_Component::class) {
+        //         $cfg->removeComponentsByType($c);
+        //     }
+        // }
+
+        // apply config components
         if (isset($this->configs[$config])) {
             if (is_string($this->configs[$config])) {
                 $class = $this->configs[$config];
@@ -146,20 +185,26 @@ class Grid
     public function remove($components)
     {
         if (!empty($components)) {
-            foreach ($components as $component => $args) {
-                if (is_array($args)) {
-                    if (isset($this->components[$component])) {
-                        $this->grid
-                            ->getConfig()
-                            ->removeComponentsByType(
-                                $this->components[$component],
-                            );
-                    }
-                } else {
-                    if (isset($this->components[$args])) {
-                        $this->grid
-                            ->getConfig()
-                            ->removeComponentsByType($this->components[$args]);
+            if (!is_array($components)) {
+                $this->grid
+                    ->getConfig()
+                    ->removeComponentsByType($components);
+            } else {
+                foreach ($components as $component => $args) {
+                    if (is_array($args)) {
+                        if (isset($this->components[$component])) {
+                            $this->grid
+                                ->getConfig()
+                                ->removeComponentsByType(
+                                    $this->components[$component],
+                                );
+                        }
+                    } else {
+                        if (isset($this->components[$args])) {
+                            $this->grid
+                                ->getConfig()
+                                ->removeComponentsByType($this->components[$args]);
+                        }
                     }
                 }
             }
@@ -168,12 +213,19 @@ class Grid
         return $this;
     }
 
+    public function getByType($type)
+    {
+        return $this->grid->getConfig()->getComponentByType($type);
+    }
+
     public function components($components)
     {
         if (!empty($components)) {
             foreach ($components as $component => $args) {
                 if (is_array($args)) {
                     if (isset($this->components[$component])) {
+                        $this->remove($this->components[$component]);
+
                         $this->grid
                             ->getConfig()
                             ->addComponent(
@@ -181,10 +233,18 @@ class Grid
                             );
                     }
                 } else {
-                    if (isset($this->components[$args])) {
+                    if (is_numeric($component) && isset($this->components[$args])) {
+                        $this->remove($this->components[$args]);
+
                         $this->grid
                             ->getConfig()
                             ->addComponent(new ($this->components[$args])());
+                    } else if (isset($this->components[$component])) {
+                        $this->remove($this->components[$component]);
+
+                        $this->grid
+                            ->getConfig()
+                            ->addComponent(new ($this->components[$component])($args));
                     }
                 }
             }
