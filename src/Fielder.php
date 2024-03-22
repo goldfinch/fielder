@@ -1916,9 +1916,9 @@ class Fielder
      * Available methods:
      *
      * Code example:
-        $fielder->link('ALink', 'Link'),
+        $fielder->linkRel('ALink', 'Link'),
      */
-    public function link($name, $title = null, $linkConfig = [])
+    public function linkRel($name, $title = null, $linkConfig = [])
     {
         $this->fields->removeByName($name . 'ID');
 
@@ -1932,7 +1932,7 @@ class Fielder
      * Allowed relations: has_one
      * Available methods:
      */
-    public function inlineLink($name, $title = null, $value = null)
+    public function link($name, $title = null, $value = null)
     {
         $this->fields->removeByName($name . 'ID');
 
@@ -1952,7 +1952,7 @@ class Fielder
           'Page' => \Page::class,
       ];
      */
-    public function inlineLinks($name, $title = null, SS_List $dataList = null)
+    public function links($name, $title = null, SS_List $dataList = null)
     {
         // $this->fields->removeByName($name . 'ID');
 

@@ -1280,25 +1280,6 @@ See: [github.com/goldfinch/google-fields](https://github.com/goldfinch/google-fi
 #### link
 
 ```bash
-composer require gorriecoe/silverstripe-linkfield ^1.1
-```
-
-> Link field
-
-Class: `gorriecoe\LinkField\LinkField`
-
-Suitable relationship: `has_one`
-Relationship type: `gorriecoe\Link\Models\Link::class`
-
-```php
-$fielder->link($name, $title = null, $linkConfig = [])
-// ..
-$fielder->link('ALink', 'Link')
-```
-
-#### inlineLink
-
-```bash
 composer require maxime-rainville/anyfield ^0.0.0
 ```
 
@@ -1312,10 +1293,10 @@ Relationship type: `SilverStripe\LinkField\Models\Link::class`
 Template: `vendor/silverstripe/linkfield/templates/SilverStripe/LinkField/Models/Link.ss`
 
 ```php
-$fielder->inlineLink($name, $title = null, $value = null)
+$fielder->link($name, $title = null, $value = null)
 ```
 
-#### inlineLinks
+#### links
 
 ```bash
 composer require maxime-rainville/anyfield ^0.0.0
@@ -1329,7 +1310,7 @@ Suitable relationship: `has_many` `many_many` `belongs_many_many`
 Relationship type: `SilverStripe\LinkField\Models\Link::class`
 
 ```php
-$fielder->inlineLinks($name, $title = null, SS_List $dataList = null)
+$fielder->links($name, $title = null, SS_List $dataList = null)
 ```
 
 Additional requirements:
@@ -1358,6 +1339,25 @@ Relationship type: `SilverStripe\LinkField\Models\Link::class`
 
 ```php
 $fielder->linkSS($name, $title = null, $value = null)
+```
+
+#### linkRel (extra link field)
+
+```bash
+composer require gorriecoe/silverstripe-linkfield ^1.1
+```
+
+> Link field
+
+Class: `gorriecoe\LinkField\LinkField`
+
+Suitable relationship: `has_one`
+Relationship type: `gorriecoe\Link\Models\Link::class`
+
+```php
+$fielder->linkRel($name, $title = null, $linkConfig = [])
+// ..
+$fielder->linkRel('ALink', 'Link')
 ```
 
 #### code
