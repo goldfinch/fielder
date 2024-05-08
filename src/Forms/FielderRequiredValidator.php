@@ -16,7 +16,7 @@ class FielderRequiredValidator extends RequiredFields
         if ($fielder || $fielderSettings) {
 
             if (isset($this->form->extraClasses['CMSPageSettingsController'])) { // !
-                $required = $fielder->getRequireFields();
+                $required = $fielderSettings->getRequireFields();
             } else if ($fielder) { // !
                 $required = $fielder->getRequireFields();
             }
