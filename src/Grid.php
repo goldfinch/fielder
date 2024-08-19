@@ -168,7 +168,7 @@ class Grid
         // }
 
         // apply config components
-        if (isset($this->configs[$config])) {
+        if (is_string($config) && isset($this->configs[$config])) {
             if (is_string($this->configs[$config])) {
                 $class = $this->configs[$config];
                 $this->grid->setConfig(new $class());
